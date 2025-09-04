@@ -52,16 +52,30 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				}
+				// Custom DJ theme colors
+				gold: {
+					DEFAULT: 'hsl(var(--gold))',
+					muted: 'hsl(var(--gold-muted))',
+					dark: 'hsl(var(--gold-dark))'
+				},
+				toulouse: {
+					brick: 'hsl(var(--toulouse-brick))'
+				},
+				'deep-black': 'hsl(var(--deep-black))',
+				'warm-black': 'hsl(var(--warm-black))'
+			},
+			fontFamily: {
+				'montserrat': ['Montserrat', 'sans-serif'],
+			},
+			backgroundImage: {
+				'gradient-hero': 'var(--gradient-hero)',
+				'gradient-gold': 'var(--gradient-gold)',
+				'gradient-accent': 'var(--gradient-accent)'
+			},
+			boxShadow: {
+				'gold': 'var(--shadow-gold)',
+				'elegant': 'var(--shadow-elegant)',
+				'glow': 'var(--shadow-glow)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +98,36 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'glow-pulse': {
+					'0%, 100%': {
+						boxShadow: '0 0 20px hsl(var(--gold) / 0.3), 0 0 40px hsl(var(--gold) / 0.1)'
+					},
+					'50%': {
+						boxShadow: '0 0 30px hsl(var(--gold) / 0.5), 0 0 60px hsl(var(--gold) / 0.2)'
+					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0px)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'slide-up': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(30px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+				'float': 'float 6s ease-in-out infinite',
+				'slide-up': 'slide-up 0.6s ease-out'
 			}
 		}
 	},

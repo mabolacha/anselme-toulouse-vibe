@@ -1,12 +1,26 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Navigation from '@/components/Navigation';
+import HeroSection from '@/components/HeroSection';
+import EventsSection from '@/components/EventsSection';
+import MusicSection from '@/components/MusicSection';
+import ContactSection from '@/components/ContactSection';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background font-montserrat">
+      <Navigation />
+      <HeroSection />
+      <EventsSection />
+      <MusicSection />
+      <ContactSection />
+      
+      {/* Footer */}
+      <footer className="bg-deep-black border-t border-gold/20 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-gold font-montserrat tracking-wide">
+            © 2024 DJ Anselme - Toulouse, France. Tous droits réservés.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

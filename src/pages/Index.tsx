@@ -1,5 +1,6 @@
 import Navigation from '@/components/Navigation';
 import HeroSection from '@/components/HeroSection';
+import AboutSection from '@/components/AboutSection';
 import EventsSection from '@/components/EventsSection';
 import MusicSection from '@/components/MusicSection';
 import ContactSection from '@/components/ContactSection';
@@ -9,6 +10,7 @@ const Index = () => {
     <div className="min-h-screen bg-background font-montserrat">
       <Navigation />
       <HeroSection />
+      <AboutSection />
       <EventsSection />
       <MusicSection />
       <ContactSection />

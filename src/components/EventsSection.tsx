@@ -1,8 +1,14 @@
 import { Calendar, MapPin, Clock, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useState } from 'react';
+import BookingModal from '@/components/BookingModal';
+import QuoteModal from '@/components/QuoteModal';
 
 const EventsSection = () => {
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+  
   const upcomingEvents = [
     {
       id: 1,
@@ -133,7 +139,7 @@ const EventsSection = () => {
                 <Button 
                   className="w-full bg-gradient-gold hover:bg-gold-muted text-deep-black font-bold font-montserrat tracking-wide transition-all duration-300"
                   disabled={event.status === 'private'}
-                  onClick={event.status !== 'private' ? () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) : undefined}
+                  onClick={event.status !== 'private' ? () => setIsBookingModalOpen(true) : undefined}
                 >
                   {event.status === 'private' ? 'ÉVÉNEMENT PRIVÉ' : 'RÉSERVER'}
                 </Button>
@@ -154,12 +160,22 @@ const EventsSection = () => {
           <Button 
             size="lg"
             className="bg-gradient-gold hover:bg-gold-muted text-deep-black font-bold px-8 py-4 font-montserrat tracking-wide shadow-gold hover:shadow-glow transition-all duration-300"
-            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => setIsQuoteModalOpen(true)}
           >
             DEMANDER UN DEVIS
           </Button>
         </div>
       </div>
+
+      {/* Modals */}
+      <BookingModal 
+        open={isBookingModalOpen} 
+        onOpenChange={setIsBookingModalOpen} 
+      />
+      <QuoteModal 
+        open={isQuoteModalOpen} 
+        onOpenChange={setIsQuoteModalOpen} 
+      />
     </section>
   );
 };

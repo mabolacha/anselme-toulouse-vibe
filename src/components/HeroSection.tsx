@@ -1,8 +1,12 @@
 import { Play, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import BookingModal from '@/components/BookingModal';
 const heroImage = '/lovable-uploads/023c9937-a136-43b4-a3d6-1f199d0dd82b.png';
 
 const HeroSection = () => {
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
@@ -49,7 +53,7 @@ const HeroSection = () => {
               variant="outline" 
               size="lg"
               className="border-2 border-gold text-gold hover:bg-gold hover:text-deep-black font-bold px-8 py-4 text-lg tracking-wide font-montserrat transition-all duration-300"
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => setIsBookingModalOpen(true)}
             >
               <Calendar className="h-5 w-5 mr-2" />
               RÉSERVER ÉVÉNEMENT
@@ -66,6 +70,12 @@ const HeroSection = () => {
 
       {/* Decorative Elements */}
       <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-background to-transparent z-5"></div>
+
+      {/* Booking Modal */}
+      <BookingModal 
+        open={isBookingModalOpen} 
+        onOpenChange={setIsBookingModalOpen} 
+      />
     </section>
   );
 };

@@ -14,7 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          budget_range: string | null
+          created_at: string
+          email: string
+          event_date: string | null
+          event_type: string
+          guest_count: number | null
+          id: string
+          message: string | null
+          name: string
+          phone: string | null
+          status: string | null
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          budget_range?: string | null
+          created_at?: string
+          email: string
+          event_date?: string | null
+          event_type: string
+          guest_count?: number | null
+          id?: string
+          message?: string | null
+          name: string
+          phone?: string | null
+          status?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          budget_range?: string | null
+          created_at?: string
+          email?: string
+          event_date?: string | null
+          event_type?: string
+          guest_count?: number | null
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string | null
+          status?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
+      quotes: {
+        Row: {
+          budget_range: string | null
+          created_at: string
+          duration_hours: number | null
+          email: string
+          event_date: string | null
+          event_type: string
+          guest_count: number | null
+          id: string
+          message: string | null
+          name: string
+          phone: string | null
+          quote_amount: number | null
+          special_requests: string | null
+          status: string | null
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          budget_range?: string | null
+          created_at?: string
+          duration_hours?: number | null
+          email: string
+          event_date?: string | null
+          event_type: string
+          guest_count?: number | null
+          id?: string
+          message?: string | null
+          name: string
+          phone?: string | null
+          quote_amount?: number | null
+          special_requests?: string | null
+          status?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          budget_range?: string | null
+          created_at?: string
+          duration_hours?: number | null
+          email?: string
+          event_date?: string | null
+          event_type?: string
+          guest_count?: number | null
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string | null
+          quote_amount?: number | null
+          special_requests?: string | null
+          status?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

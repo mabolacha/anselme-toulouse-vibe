@@ -20,12 +20,12 @@ const MusicSection = () => {
     },
     {
       id: 2,
-      title: 'French Touch Revival',
-      genre: 'French House',
+      title: 'Best of 90s',
+      genre: 'Généraliste',
       duration: '6:41',
       releaseDate: '2023-12-08',
       coverUrl: '/api/placeholder/300/300',
-      description: 'Hommage à la French Touch des années 90',
+      description: 'Hommage aux sons des années 90',
       streamingLinks: {
         spotify: '#',
         apple: '#',
@@ -51,16 +51,16 @@ const MusicSection = () => {
   const podcasts = [
     {
       id: 1,
-      title: 'Anselme Mix Sessions #012',
-      description: 'Mix exclusif enregistré live au Connexion Live Toulouse',
+      title: 'DJ Anselme Mix Sessions #012',
+      description: 'Mix exclusif enregistré live au Festival du Fousseret',
       duration: '62 min',
       date: '2024-01-20',
       listeners: '12.5K'
     },
     {
       id: 2,
-      title: 'Anselme Mix Sessions #011',
-      description: 'Set deep house & progressive pour les soirées d\'été',
+      title: 'DJ Anselme Mix Sessions #011',
+      description: 'Set RnB Années 2000',
       duration: '58 min',
       date: '2024-01-05',
       listeners: '18.2K'
@@ -83,7 +83,7 @@ const MusicSection = () => {
           </h2>
           <p className="text-xl text-muted-foreground font-montserrat tracking-wide max-w-3xl mx-auto">
             Découvrez mes dernières créations musicales, des sets exclusifs aux tracks originales, 
-            une fusion parfaite entre la French Touch et les sonorités modernes.
+            une fusion parfaite entre les sons d'ajourd'hui et ceux d'hier.
           </p>
         </div>
 
@@ -212,7 +212,7 @@ const MusicSection = () => {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button className="bg-[#1DB954] hover:bg-[#1ed760] text-white font-montserrat">
-                Spotify
+                Hear.this
               </Button>
               <Button className="bg-[#FA57C1] hover:bg-[#fb6bc4] text-white font-montserrat">
                 Apple Music

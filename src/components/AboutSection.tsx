@@ -39,7 +39,7 @@ const AboutSection = () => {
             <div className="flex flex-wrap gap-4">
               <Button 
                 className="bg-gradient-gold hover:opacity-90 text-deep-black font-semibold"
-                onClick={() => document.getElementById('events')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Découvrir mes services
               </Button>

@@ -177,7 +177,7 @@ const ContactSection = () => {
               </div>
             </Card>
 
-            <div className="space-y-4">
+            <div id="services" className="space-y-4">
               <h3 className="text-xl font-bold font-montserrat text-gold">MES SERVICES</h3>
               <div className="grid grid-cols-2 gap-3">
                 {['Soirées Privées', 'Mariages', 'Événements Corporate', 'Clubs & Festivals'].map((service) => (

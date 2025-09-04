@@ -17,7 +17,7 @@ const AboutSection = () => {
           <div className="space-y-8">
             <div>
               <h2 className="text-4xl md:text-5xl font-black font-montserrat text-gradient mb-6">
-                À Propos de DJ ANSELME
+                À propos de DJ ANSELME
               </h2>
               <div className="w-24 h-1 bg-gradient-gold rounded-full mb-8"></div>
             </div>

@@ -49,6 +49,20 @@ const EventsSection = () => {
     });
   };
 
+  const getEventStatus = (eventDate: string, originalStatus: string) => {
+    const today = new Date();
+    const eventDateTime = new Date(eventDate);
+    
+    // Réinitialiser l'heure pour comparer seulement les dates
+    today.setHours(0, 0, 0, 0);
+    eventDateTime.setHours(0, 0, 0, 0);
+    
+    if (eventDateTime < today) {
+      return 'finished';
+    }
+    return originalStatus;
+  };
+
   return (
     <section id="events" className="py-20 bg-gradient-hero relative overflow-hidden">
       {/* Background Pattern */}
@@ -81,7 +95,10 @@ const EventsSection = () => {
 
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {upcomingEvents.map((event) => (
+          {upcomingEvents.map((event) => {
+            const currentStatus = getEventStatus(event.date, event.status);
+            
+            return (
             <Card 
               key={event.id} 
               className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 group hover:shadow-gold overflow-hidden"
@@ -90,12 +107,14 @@ const EventsSection = () => {
                 {/* Event Status Badge */}
                 <div className="flex justify-between items-start mb-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-bold font-montserrat tracking-wide ${
-                    event.status === 'confirmed' ? 'bg-gold text-deep-black' :
-                    event.status === 'private' ? 'bg-toulouse-brick text-foreground' :
+                    currentStatus === 'confirmed' ? 'bg-gold text-deep-black' :
+                    currentStatus === 'private' ? 'bg-toulouse-brick text-foreground' :
+                    currentStatus === 'finished' ? 'bg-muted text-muted-foreground' :
                     'bg-muted text-muted-foreground'
                   }`}>
-                    {event.status === 'confirmed' ? 'CONFIRMÉ' :
-                     event.status === 'private' ? 'PRIVÉ' : 'EN ATTENTE'}
+                    {currentStatus === 'confirmed' ? 'CONFIRMÉ' :
+                     currentStatus === 'private' ? 'PRIVÉ' :
+                     currentStatus === 'finished' ? 'TERMINÉ' : 'EN ATTENTE'}
                   </span>
                   <span className="text-gold font-bold font-montserrat">{event.price}</span>
                 </div>
@@ -132,13 +151,15 @@ const EventsSection = () => {
                 {/* Action Button */}
                 <Button 
                   className="w-full bg-gradient-gold hover:bg-gold-muted text-deep-black font-bold font-montserrat tracking-wide transition-all duration-300"
-                  disabled={event.status === 'private'}
+                  disabled={currentStatus === 'private' || currentStatus === 'finished'}
                 >
-                  {event.status === 'private' ? 'ÉVÉNEMENT PRIVÉ' : 'RÉSERVER'}
+                  {currentStatus === 'private' ? 'ÉVÉNEMENT PRIVÉ' :
+                   currentStatus === 'finished' ? 'ÉVÉNEMENT TERMINÉ' : 'RÉSERVER'}
                 </Button>
               </div>
             </Card>
-          ))}
+            );
+          })}
         </div>
 
         {/* Contact for Booking */}

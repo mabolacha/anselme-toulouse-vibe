@@ -17,7 +17,7 @@ const Index = () => {
       <footer className="bg-deep-black border-t border-gold/20 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-gold font-montserrat tracking-wide">
-            © 2024 DJ Anselme - Toulouse, France. Tous droits réservés.
+            © 2025 DJ Anselme - Toulouse, France. Tous droits réservés.
           </p>
         </div>
       </footer>

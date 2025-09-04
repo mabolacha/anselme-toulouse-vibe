@@ -6,24 +6,24 @@ const EventsSection = () => {
   const upcomingEvents = [
     {
       id: 1,
-      title: 'Fête de la musique',
-      venue: 'Place de la Mairie',
-      date: '2025-06-21',
+      title: 'Nuit Électronique',
+      venue: 'Le Connexion Live',
+      date: '2024-02-15',
       time: '23:00',
-      location: 'Le Fousseret, 31',
-      description: 'Fête de la musique',
-      price: 'Gratuit',
+      location: 'Toulouse, France',
+      description: 'Soirée électronique avec les meilleurs DJs de Toulouse',
+      price: '15€',
       status: 'confirmed'
     },
     {
-     id: 2,
-      title: 'Soirée Afro-Caribéenne',
-      venue: 'BBT de Cornebarrieu',
-      date: '2025-09-13',
-      time: '23:00',
-      location: 'Cornebarrieur, 31700',
-      description: 'Soirée de rentrée. Billets disponibles sur Bizouk.com',
-      price: '10€+Conso en prévente',
+      id: 2,
+      title: 'Festival Summer Vibes',
+      venue: 'Parc des Expositions',
+      date: '2024-03-22',
+      time: '20:00',
+      location: 'Toulouse, France',
+      description: 'Festival outdoor avec DJ sets en plein air',
+      price: '25€',
       status: 'confirmed'
     },
     {
@@ -154,7 +154,7 @@ const EventsSection = () => {
             size="lg"
             className="bg-gradient-gold hover:bg-gold-muted text-deep-black font-bold px-8 py-4 font-montserrat tracking-wide shadow-gold hover:shadow-glow transition-all duration-300"
           >
-            DEMANDEZ UN DEVIS
+            DEMANDER UN DEVIS
           </Button>
         </div>
       </div>

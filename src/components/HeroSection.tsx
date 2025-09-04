@@ -26,7 +26,7 @@ const HeroSection = () => {
           
           {/* Subtitle */}
           <div className="text-xl sm:text-2xl md:text-3xl font-light text-foreground mb-4 tracking-wider font-montserrat">
-            DJ PROFESSIONNEL / PRODUCTEUR / TOULOUSE
+            DJ PROFESSIONNEL / TOULOUSE
           </div>
           
           {/* Location Badge */}

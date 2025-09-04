@@ -3,9 +3,9 @@ import { Button } from '@/components/ui/button';
 
 const AboutSection = () => {
   const stats = [
-    { icon: Music, value: '500+', label: 'Événements mixés' },
+    { icon: Music, value: '100+', label: 'Événements mixés' },
     { icon: Users, value: '10K+', label: 'Personnes rassemblées' },
-    { icon: Calendar, value: '8+', label: 'Années d\'expérience' },
+    { icon: Calendar, value: '18+', label: 'Années d\'expérience' },
     { icon: Award, value: '50+', label: 'Soirées mémorables' },
   ];
 
@@ -28,7 +28,7 @@ const AboutSection = () => {
               </p>
               
               <p className="text-lg text-muted-foreground leading-relaxed">
-                De l'électro aux hits du moment, en passant par les classiques intemporels, mon style éclectique s'adapte à tous les publics et toutes les occasions. Que ce soit pour vos <span className="text-gold font-semibold">soirées privées</span>, <span className="text-gold font-semibold">mariages</span>, <span className="text-gold font-semibold">événements d'entreprise</span> ou <span className="text-gold font-semibold">festivals</span>, je mets tout mon savoir-faire à votre service.
+                Des années 90 aux hits du moment, en passant par les classiques intemporels, mon style éclectique s'adapte à tous les publics et toutes les occasions. Que ce soit pour vos <span className="text-gold font-semibold">soirées privées</span>, <span className="text-gold font-semibold">mariages</span>, <span className="text-gold font-semibold">événements d'entreprise</span> ou <span className="text-gold font-semibold">festivals</span>, je mets tout mon savoir-faire à votre service.
               </p>
               
               <p className="text-lg text-muted-foreground leading-relaxed">

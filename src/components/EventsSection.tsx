@@ -19,7 +19,7 @@ const EventsSection = () => {
       id: 2,
       title: 'Festival Summer Vibes',
       venue: 'Parc des Expositions',
-      date: '2024-03-22',
+      date: '2025-10-22',
       time: '20:00',
       location: 'Toulouse, France',
       description: 'Festival outdoor avec DJ sets en plein air',
@@ -47,20 +47,6 @@ const EventsSection = () => {
       month: 'long',
       day: 'numeric'
     });
-  };
-
-  const getEventStatus = (eventDate: string, originalStatus: string) => {
-    const today = new Date();
-    const eventDateTime = new Date(eventDate);
-    
-    // Réinitialiser l'heure pour comparer seulement les dates
-    today.setHours(0, 0, 0, 0);
-    eventDateTime.setHours(0, 0, 0, 0);
-    
-    if (eventDateTime < today) {
-      return 'finished';
-    }
-    return originalStatus;
   };
 
   return (
@@ -95,10 +81,7 @@ const EventsSection = () => {
 
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {upcomingEvents.map((event) => {
-            const currentStatus = getEventStatus(event.date, event.status);
-            
-            return (
+          {upcomingEvents.map((event) => (
             <Card 
               key={event.id} 
               className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 group hover:shadow-gold overflow-hidden"
@@ -107,14 +90,12 @@ const EventsSection = () => {
                 {/* Event Status Badge */}
                 <div className="flex justify-between items-start mb-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-bold font-montserrat tracking-wide ${
-                    currentStatus === 'confirmed' ? 'bg-gold text-deep-black' :
-                    currentStatus === 'private' ? 'bg-toulouse-brick text-foreground' :
-                    currentStatus === 'finished' ? 'bg-muted text-muted-foreground' :
+                    event.status === 'confirmed' ? 'bg-gold text-deep-black' :
+                    event.status === 'private' ? 'bg-toulouse-brick text-foreground' :
                     'bg-muted text-muted-foreground'
                   }`}>
-                    {currentStatus === 'confirmed' ? 'CONFIRMÉ' :
-                     currentStatus === 'private' ? 'PRIVÉ' :
-                     currentStatus === 'finished' ? 'TERMINÉ' : 'EN ATTENTE'}
+                    {event.status === 'confirmed' ? 'CONFIRMÉ' :
+                     event.status === 'private' ? 'PRIVÉ' : 'EN ATTENTE'}
                   </span>
                   <span className="text-gold font-bold font-montserrat">{event.price}</span>
                 </div>
@@ -151,15 +132,13 @@ const EventsSection = () => {
                 {/* Action Button */}
                 <Button 
                   className="w-full bg-gradient-gold hover:bg-gold-muted text-deep-black font-bold font-montserrat tracking-wide transition-all duration-300"
-                  disabled={currentStatus === 'private' || currentStatus === 'finished'}
+                  disabled={event.status === 'private'}
                 >
-                  {currentStatus === 'private' ? 'ÉVÉNEMENT PRIVÉ' :
-                   currentStatus === 'finished' ? 'ÉVÉNEMENT TERMINÉ' : 'RÉSERVER'}
+                  {event.status === 'private' ? 'ÉVÉNEMENT PRIVÉ' : 'RÉSERVER'}
                 </Button>
               </div>
             </Card>
-            );
-          })}
+          ))}
         </div>
 
         {/* Contact for Booking */}
@@ -168,7 +147,7 @@ const EventsSection = () => {
             Besoin d'un DJ pour votre événement ?
           </h3>
           <p className="text-muted-foreground font-montserrat mb-6 max-w-2xl mx-auto">
-            Soirées privées, mariages, événements corporatifs... 
+            Soirées privées, mariages, événements corporatifs, clubs... 
             Contactez-moi pour un devis personnalisé et une prestation sur mesure.
           </p>
           <Button 

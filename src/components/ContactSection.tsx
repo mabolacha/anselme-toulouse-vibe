@@ -11,7 +11,7 @@ const ContactSection = () => {
             CONTACT
           </h2>
           <p className="text-xl text-muted-foreground font-montserrat tracking-wide max-w-3xl mx-auto">
-            Prêt à faire vibrer votre événement ? Contactez-moi pour discuter de votre projet.
+            Prêt à faire vibrer votre événement ? Prenons contact pour discuter de votre projet.
           </p>
         </div>
 
@@ -23,20 +23,20 @@ const ContactSection = () => {
                 <MapPin className="h-6 w-6 text-gold mr-4" />
                 <div>
                   <div className="font-montserrat font-bold text-foreground">Toulouse, France</div>
-                  <div className="text-muted-foreground font-montserrat">Disponible dans toute la région</div>
+                  <div className="text-muted-foreground font-montserrat">Disponible dans toute région Occitanie</div>
                 </div>
               </div>
               <div className="flex items-center">
                 <Mail className="h-6 w-6 text-gold mr-4" />
                 <div>
-                  <div className="font-montserrat font-bold text-foreground">contact@djanselme.fr</div>
+                  <div className="font-montserrat font-bold text-foreground">info@djanselme.com</div>
                   <div className="text-muted-foreground font-montserrat">Réponse sous 24h</div>
                 </div>
               </div>
               <div className="flex items-center">
                 <Phone className="h-6 w-6 text-gold mr-4" />
                 <div>
-                  <div className="font-montserrat font-bold text-foreground">+33 6 12 34 56 78</div>
+                  <div className="font-montserrat font-bold text-foreground">+33 7 68 55 11 79</div>
                   <div className="text-muted-foreground font-montserrat">Lun-Dim 10h-22h</div>
                 </div>
               </div>

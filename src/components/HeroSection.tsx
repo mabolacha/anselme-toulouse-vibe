@@ -1,6 +1,6 @@
 import { Play, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import heroImage from '@/assets/dj-anselme-hero.jpg';
+const heroImage = '/lovable-uploads/023c9937-a136-43b4-a3d6-1f199d0dd82b.png';
 
 const HeroSection = () => {
   return (

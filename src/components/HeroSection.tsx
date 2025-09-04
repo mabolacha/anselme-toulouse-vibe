@@ -21,7 +21,7 @@ const HeroSection = () => {
         <div className="animate-slide-up">
           {/* Main Title */}
           <h1 className="hero-title text-gradient mb-6 animate-glow-pulse">
-            ANSELME
+            DJ ANSELME
           </h1>
           
           {/* Subtitle */}

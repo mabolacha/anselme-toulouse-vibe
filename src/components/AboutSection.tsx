@@ -24,7 +24,7 @@ const AboutSection = () => {
             
             <div className="space-y-6">
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Basé à <span className="text-gold font-semibold">Toulouse</span>, Je transforme chaque événement en une expérience musicale inoubliable. Avec une passion débordante pour la musique et une expertise technique reconnue, je crée des ambiances uniques qui font vibrer les foules.
+                Basé à <span className="text-gold font-semibold">Toulouse</span>, je transforme chaque événement en une expérience musicale inoubliable. Avec une passion débordante pour la musique et une expertise technique reconnue, je crée des ambiances uniques qui font vibrer les foules.
               </p>
               
               <p className="text-lg text-muted-foreground leading-relaxed">

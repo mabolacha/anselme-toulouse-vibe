@@ -6,36 +6,36 @@ const EventsSection = () => {
   const upcomingEvents = [
     {
       id: 1,
-      title: 'Nuit Électronique',
-      venue: 'Le Connexion Live',
-      date: '2024-02-15',
+      title: 'Soirée spéciale jeunes',
+      venue: 'Salles des fêtes',
+      date: '2025-05-31',
       time: '23:00',
-      location: 'Toulouse, France',
-      description: 'Soirée électronique avec les meilleurs DJs de Toulouse',
+      location: 'Marignac Lasclares, 31',
+      description: 'Organisée par les Comité des fêtes de la Mairie',
       price: '15€',
       status: 'confirmed'
     },
     {
       id: 2,
-      title: 'Festival Summer Vibes',
-      venue: 'Parc des Expositions',
-      date: '2025-10-22',
-      time: '20:00',
-      location: 'Toulouse, France',
+      title: 'Fête de la Musique',
+      venue: 'Place de la Mairie',
+      date: '2025-06-21',
+      time: '23:00',
+      location: 'Le Fousseret, 31',
       description: 'Festival outdoor avec DJ sets en plein air',
-      price: '25€',
+      price: 'Gratuit',
       status: 'confirmed'
     },
     {
       id: 3,
-      title: 'Soirée Privée Corporate',
-      venue: 'Événement Privé',
-      date: '2024-04-05',
-      time: '19:30',
-      location: 'Toulouse, France',
-      description: 'Animation DJ pour événement corporate',
-      price: 'Sur devis',
-      status: 'private'
+      title: 'Soirée Afro-Caribéénne',
+      venue: 'BBT Cornebarrieu',
+      date: '2025-09-13',
+      time: '22:30',
+      location: '6, rue E. Dewotine, Cornebarrieu',
+      description: 'Animation avec DJ Riina',
+      price: '12€ + Conso - en pré-vente sur Bizouk',
+      status: 'confirmed'
     }
   ];
 

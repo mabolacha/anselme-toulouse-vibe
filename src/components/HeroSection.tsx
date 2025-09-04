@@ -10,7 +10,7 @@ const HeroSection = () => {
         <img 
           src={heroImage} 
           alt="DJ Anselme, DJ professionnel de Toulouse, mixant lors d'un événement avec équipement professionnel" 
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-cover object-top scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-deep-black/70 via-deep-black/50 to-warm-black/60"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-transparent to-transparent"></div>

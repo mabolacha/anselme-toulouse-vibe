@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      audio_content: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_seconds: number | null
+          featured: boolean | null
+          file_path: string
+          file_size: number | null
+          genre: string | null
+          id: string
+          mix_type: string | null
+          play_count: number | null
+          release_date: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number | null
+          featured?: boolean | null
+          file_path: string
+          file_size?: number | null
+          genre?: string | null
+          id?: string
+          mix_type?: string | null
+          play_count?: number | null
+          release_date?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number | null
+          featured?: boolean | null
+          file_path?: string
+          file_size?: number | null
+          genre?: string | null
+          id?: string
+          mix_type?: string | null
+          play_count?: number | null
+          release_date?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           budget_range: string | null

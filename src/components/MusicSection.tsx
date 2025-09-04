@@ -1,71 +1,56 @@
-import { Play, Download, ExternalLink, Headphones } from 'lucide-react';
+import { Play, Download, ExternalLink, Headphones, Music } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import AudioPlayer from '@/components/AudioPlayer';
+import { useAudioContent } from '@/hooks/useAudioContent';
 
 const MusicSection = () => {
-  const latestTracks = [
-    {
-      id: 1,
-      title: 'Toulouse Nights',
-      genre: 'Deep House',
-      duration: '5:23',
-      releaseDate: '2024-01-15',
-      coverUrl: '/api/placeholder/300/300',
-      description: 'Un voyage musical à travers les nuits toulousaines',
-      streamingLinks: {
-        spotify: '#',
-        apple: '#',
-        soundcloud: '#'
-      }
-    },
-    {
-      id: 2,
-      title: 'Best of 90s',
-      genre: 'Généraliste',
-      duration: '6:41',
-      releaseDate: '2023-12-08',
-      coverUrl: '/api/placeholder/300/300',
-      description: 'Hommage aux sons des années 90',
-      streamingLinks: {
-        spotify: '#',
-        apple: '#',
-        soundcloud: '#'
-      }
-    },
-    {
-      id: 3,
-      title: 'Garonne Flow',
-      genre: 'Tech House',
-      duration: '7:15',
-      releaseDate: '2023-11-22',
-      coverUrl: '/api/placeholder/300/300',
-      description: 'Inspiré par les berges de la Garonne',
-      streamingLinks: {
-        spotify: '#',
-        apple: '#',
-        soundcloud: '#'
-      }
-    }
-  ];
+  const { audioContent, loading, error, updatePlayCount } = useAudioContent();
 
-  const podcasts = [
-    {
-      id: 1,
-      title: 'DJ Anselme Mix Sessions #012',
-      description: 'Mix exclusif enregistré live au Festival du Fousseret',
-      duration: '62 min',
-      date: '2024-01-20',
-      listeners: '12.5K'
-    },
-    {
-      id: 2,
-      title: 'DJ Anselme Mix Sessions #011',
-      description: 'Set RnB Années 2000',
-      duration: '58 min',
-      date: '2024-01-05',
-      listeners: '18.2K'
-    }
-  ];
+  // Filter content by type
+  const tracks = audioContent.filter(item => 
+    item.mix_type === 'original_track' || item.mix_type === 'mix'
+  );
+  
+  const podcasts = audioContent.filter(item => 
+    item.mix_type === 'podcast' || item.mix_type === 'live_set'
+  );
+
+  const formatDuration = (seconds: number | null) => {
+    if (!seconds) return '0:00';
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  if (loading) {
+    return (
+      <section id="music" className="py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="text-2xl text-gold font-montserrat">Chargement des contenus...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="music" className="py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="text-xl text-red-500 font-montserrat">Erreur: {error}</div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="music" className="py-20 bg-background relative overflow-hidden">

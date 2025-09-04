@@ -7,7 +7,7 @@ import ContactSection from '@/components/ContactSection';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background font-montserrat">
+    <main className="min-h-screen bg-background font-montserrat">
       <Navigation />
       <HeroSection />
       <AboutSection />
@@ -23,7 +23,7 @@ const Index = () => {
           </p>
         </div>
       </footer>
-    </div>
+    </main>
   );
 };
 

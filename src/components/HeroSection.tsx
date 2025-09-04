@@ -9,7 +9,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 z-0">
         <img 
           src={heroImage} 
-          alt="DJ Anselme en action" 
+          alt="DJ Anselme, DJ professionnel de Toulouse, mixant lors d'un événement avec équipement professionnel" 
           className="w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-deep-black/70 via-deep-black/50 to-warm-black/60"></div>

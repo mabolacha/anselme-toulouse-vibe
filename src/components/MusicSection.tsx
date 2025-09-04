@@ -89,9 +89,9 @@ const MusicSection = () => {
 
         {/* Latest Tracks */}
         <div className="mb-20">
-          <h3 className="text-3xl font-bold font-montserrat text-gold mb-8 text-center">
+          <h2 className="text-3xl font-bold font-montserrat text-gold mb-8 text-center">
             DERNIÈRES PRODUCTIONS
-          </h3>
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {latestTracks.map((track) => (
               <Card 
@@ -153,9 +153,9 @@ const MusicSection = () => {
 
         {/* Podcasts Section */}
         <div>
-          <h3 className="text-3xl font-bold font-montserrat text-gold mb-8 text-center">
+          <h2 className="text-3xl font-bold font-montserrat text-gold mb-8 text-center">
             MIX SESSIONS PODCAST
-          </h3>
+          </h2>
           <div className="max-w-4xl mx-auto space-y-6">
             {podcasts.map((podcast) => (
               <Card 
@@ -204,9 +204,9 @@ const MusicSection = () => {
 
           {/* Streaming Platforms */}
           <div className="text-center mt-12 p-8 bg-warm-black/50 backdrop-blur-sm border border-gold/20 rounded-lg">
-            <h4 className="text-2xl font-bold font-montserrat text-gold mb-4">
+            <h3 className="text-2xl font-bold font-montserrat text-gold mb-4">
               SUIVEZ-MOI SUR LES PLATEFORMES
-            </h4>
+            </h3>
             <p className="text-muted-foreground font-montserrat mb-6">
               Retrouvez tous mes sets et productions sur vos plateformes préférées
             </p>

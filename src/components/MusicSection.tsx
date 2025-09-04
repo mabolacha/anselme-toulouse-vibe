@@ -78,7 +78,7 @@ const MusicSection = () => {
             DERNIÈRES PRODUCTIONS
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {latestTracks.map((track) => (
+            {tracks.map((track) => (
               <Card 
                 key={track.id} 
                 className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 group hover:shadow-gold overflow-hidden"
@@ -103,8 +103,8 @@ const MusicSection = () => {
                       {track.title}
                     </h4>
                     <div className="flex justify-between items-center text-sm text-muted-foreground font-montserrat mt-1">
-                      <span>{track.genre}</span>
-                      <span>{track.duration}</span>
+                      <span>{track.genre || 'Electronic'}</span>
+                      <span>{formatDuration(track.duration_seconds)}</span>
                     </div>
                   </div>
 
@@ -167,9 +167,9 @@ const MusicSection = () => {
                       {podcast.description}
                     </p>
                     <div className="flex items-center gap-6 text-sm text-gold font-montserrat">
-                      <span>{podcast.duration}</span>
-                      <span>{podcast.date}</span>
-                      <span>{podcast.listeners} écoutes</span>
+                      <span>{formatDuration(podcast.duration_seconds)}</span>
+                      <span>{formatDate(podcast.release_date)}</span>
+                      <span>{podcast.play_count} écoutes</span>
                     </div>
                   </div>
 

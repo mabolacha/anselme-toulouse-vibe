@@ -9,7 +9,7 @@ interface AudioContent {
   file_size: number | null;
   duration_seconds: number | null;
   genre: string | null;
-  mix_type: 'mix' | 'podcast' | 'live_set' | 'original_track' | null;
+  mix_type: string | null;
   release_date: string | null;
   play_count: number;
   featured: boolean;
@@ -43,7 +43,10 @@ export const useAudioContent = () => {
 
   const updatePlayCount = async (id: string) => {
     try {
-      const { error } = await supabase.rpc('increment_play_count', { audio_id: id });
+      const { error } = await supabase
+        .from('audio_content')
+        .update({ play_count: audioContent.find(item => item.id === id)?.play_count! + 1 })
+        .eq('id', id);
       if (error) throw error;
       
       // Update local state

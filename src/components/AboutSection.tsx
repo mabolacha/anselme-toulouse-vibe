@@ -37,10 +37,17 @@ const AboutSection = () => {
             </div>
 
             <div className="flex flex-wrap gap-4">
-              <Button className="bg-gradient-gold hover:opacity-90 text-deep-black font-semibold">
+              <Button 
+                className="bg-gradient-gold hover:opacity-90 text-deep-black font-semibold"
+                onClick={() => document.getElementById('events')?.scrollIntoView({ behavior: 'smooth' })}
+              >
                 Découvrir mes services
               </Button>
-              <Button variant="outline" className="border-gold text-gold hover:bg-gold hover:text-deep-black">
+              <Button 
+                variant="outline" 
+                className="border-gold text-gold hover:bg-gold hover:text-deep-black"
+                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+              >
                 Voir mon parcours
               </Button>
             </div>

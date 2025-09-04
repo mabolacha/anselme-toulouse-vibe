@@ -133,6 +133,7 @@ const EventsSection = () => {
                 <Button 
                   className="w-full bg-gradient-gold hover:bg-gold-muted text-deep-black font-bold font-montserrat tracking-wide transition-all duration-300"
                   disabled={event.status === 'private'}
+                  onClick={event.status !== 'private' ? () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) : undefined}
                 >
                   {event.status === 'private' ? 'ÉVÉNEMENT PRIVÉ' : 'RÉSERVER'}
                 </Button>
@@ -153,6 +154,7 @@ const EventsSection = () => {
           <Button 
             size="lg"
             className="bg-gradient-gold hover:bg-gold-muted text-deep-black font-bold px-8 py-4 font-montserrat tracking-wide shadow-gold hover:shadow-glow transition-all duration-300"
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
           >
             DEMANDER UN DEVIS
           </Button>

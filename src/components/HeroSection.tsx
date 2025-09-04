@@ -40,6 +40,7 @@ const HeroSection = () => {
             <Button 
               size="lg" 
               className="bg-gradient-gold hover:bg-gold-muted text-deep-black font-bold px-8 py-4 text-lg tracking-wide font-montserrat shadow-gold hover:shadow-glow transition-all duration-300"
+              onClick={() => document.getElementById('music')?.scrollIntoView({ behavior: 'smooth' })}
             >
               <Play className="h-5 w-5 mr-2" />
               ÉCOUTER MAINTENANT
@@ -48,6 +49,7 @@ const HeroSection = () => {
               variant="outline" 
               size="lg"
               className="border-2 border-gold text-gold hover:bg-gold hover:text-deep-black font-bold px-8 py-4 text-lg tracking-wide font-montserrat transition-all duration-300"
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
             >
               <Calendar className="h-5 w-5 mr-2" />
               RÉSERVER ÉVÉNEMENT

@@ -14,11 +14,9 @@ const Navigation = () => {
   ];
 
   const socialLinks = [
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Youtube, href: '#', label: 'YouTube' },
-    { icon: Music, href: '#', label: 'SoundCloud' }
+    { icon: Instagram, href: 'https://www.instagram.com/dj_anselme', label: 'Instagram' },
+    { icon: Youtube, href: 'https://www.youtube.com/@djanselme', label: 'YouTube' },
+    { icon: Facebook, href: 'https://www.facebook.com/djanselme', label: 'Facebook' }
   ];
 
   return (

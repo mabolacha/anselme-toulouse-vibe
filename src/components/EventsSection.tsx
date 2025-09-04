@@ -12,7 +12,7 @@ const EventsSection = () => {
   const upcomingEvents = [
     {
       id: 1,
-      title: 'Soirée spéciale jeunes',
+      title: 'Soirée spéciale jeunes - Marignac Lasclares',
       venue: 'Salles des fêtes',
       date: '2025-05-31',
       time: '23:00',
@@ -23,7 +23,7 @@ const EventsSection = () => {
     },
     {
       id: 2,
-      title: 'Fête de la Musique',
+      title: 'Fête de la Musique - Le Fousseret',
       venue: 'Place de la Mairie',
       date: '2025-06-21',
       time: '23:00',

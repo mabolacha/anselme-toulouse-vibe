@@ -25,8 +25,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const getAudioUrl = (path: string) => {
-    // For testing, use local files from public folder
-    return `/${path}`;
+    // Use Supabase Storage for audio files
+    const { data } = supabase.storage
+      .from('audio-content')
+      .getPublicUrl(path);
+    return data.publicUrl;
   };
 
   const formatTime = (time: number) => {

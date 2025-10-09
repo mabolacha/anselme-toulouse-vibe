@@ -74,8 +74,85 @@ const MusicSection = () => {
           </p>
         </div>
 
-        {/* Latest Tracks */}
+        {/* Mix Sessions Section */}
         <div className="mb-20">
+          <h2 className="text-3xl font-bold font-montserrat text-gold mb-8 text-center">
+            MIX SESSIONS
+          </h2>
+          <div className="max-w-4xl mx-auto space-y-8">
+            {/* Hearthis Player */}
+            <Card className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 overflow-hidden">
+              <div className="p-6">
+                <h3 className="text-xl font-bold font-montserrat text-gold mb-4">
+                  Open Format Mix vol 04 - Afro, RnB-Hip Hop, Kompas, Zouk, DanceHall, Afrobeat, Latino
+                </h3>
+                <div className="rounded-lg overflow-hidden">
+                  <iframe 
+                    scrolling="no" 
+                    style={{ borderRadius: '10px' }}
+                    width="100%" 
+                    height="150" 
+                    src="https://app.hearthis.at/embed/12807924/transparent_black/?hcolor=&color=&style=2&block_size=2&block_space=1&background=1&waveform=0&cover=0&autoplay=0&css=" 
+                    frameBorder="0" 
+                    allowTransparency={true}
+                    allow="autoplay"
+                  />
+                </div>
+              </div>
+            </Card>
+
+            {/* YouTube Player - Placeholder */}
+            <Card className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 overflow-hidden">
+              <div className="p-6">
+                <h3 className="text-xl font-bold font-montserrat text-gold mb-4">
+                  YouTube Mix Session
+                </h3>
+                <div className="rounded-lg overflow-hidden bg-warm-black/50 aspect-video flex items-center justify-center">
+                  <p className="text-muted-foreground font-montserrat">Lecteur YouTube à venir</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* Mixcloud Player - Placeholder */}
+            <Card className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 overflow-hidden">
+              <div className="p-6">
+                <h3 className="text-xl font-bold font-montserrat text-gold mb-4">
+                  Mixcloud Mix Session
+                </h3>
+                <div className="rounded-lg overflow-hidden bg-warm-black/50 aspect-video flex items-center justify-center">
+                  <p className="text-muted-foreground font-montserrat">Lecteur Mixcloud à venir</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Streaming Platforms */}
+          <div className="text-center mt-12 p-8 bg-warm-black/50 backdrop-blur-sm border border-gold/20 rounded-lg">
+            <h3 className="text-2xl font-bold font-montserrat text-gold mb-4">
+              SUIVEZ-MOI SUR LES PLATEFORMES
+            </h3>
+            <p className="text-muted-foreground font-montserrat mb-6">
+              Retrouvez tous mes sets et productions sur vos plateformes préférées
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button className="bg-[#1DB954] hover:bg-[#1ed760] text-white font-montserrat">
+                Hear.this
+              </Button>
+              <Button className="bg-[#FA57C1] hover:bg-[#fb6bc4] text-white font-montserrat">
+                Apple Music
+              </Button>
+              <Button className="bg-[#FF5500] hover:bg-[#ff6619] text-white font-montserrat">
+                SoundCloud
+              </Button>
+              <Button className="bg-[#FF0000] hover:bg-[#ff1919] text-white font-montserrat">
+                YouTube
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Latest Tracks */}
+        <div>
           <h2 className="text-3xl font-bold font-montserrat text-gold mb-8 text-center">
             DERNIÈRES PRODUCTIONS
           </h2>
@@ -138,84 +215,6 @@ const MusicSection = () => {
                 </div>
               </Card>
             ))}
-          </div>
-        </div>
-
-        {/* Podcasts Section */}
-        <div>
-          <h2 className="text-3xl font-bold font-montserrat text-gold mb-8 text-center">
-            MIX SESSIONS PODCAST
-          </h2>
-          <div className="max-w-4xl mx-auto space-y-6">
-            {podcasts.map((podcast) => (
-              <Card 
-                key={podcast.id}
-                className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 group hover:shadow-gold"
-              >
-                <div className="p-6">
-                  {selectedTrack === podcast.id ? (
-                    <AudioPlayer 
-                      title={podcast.title}
-                      filePath={podcast.file_path}
-                      duration={podcast.duration_seconds || 0}
-                      onPlayCountUpdate={() => updatePlayCount(podcast.id)}
-                    />
-                  ) : (
-                    <div className="flex items-center gap-6">
-                      {/* Play Button */}
-                      <div className="flex-shrink-0">
-                        <Button 
-                          size="lg" 
-                          className="rounded-full w-16 h-16 p-0 bg-gradient-gold hover:bg-gold-muted text-deep-black shadow-gold group-hover:shadow-glow transition-all duration-300"
-                          onClick={() => setSelectedTrack(podcast.id)}
-                        >
-                          <Play className="h-8 w-8" />
-                        </Button>
-                      </div>
-
-                      {/* Podcast Info */}
-                      <div className="flex-grow">
-                        <h4 className="text-xl font-bold font-montserrat text-foreground group-hover:text-gold transition-colors duration-300 mb-2">
-                          {podcast.title}
-                        </h4>
-                        <p className="text-muted-foreground font-montserrat mb-3">
-                          {podcast.description}
-                        </p>
-                        <div className="flex items-center gap-6 text-sm text-gold font-montserrat">
-                          <span>{formatDuration(podcast.duration_seconds)}</span>
-                          <span>{formatDate(podcast.release_date)}</span>
-                          <span>{podcast.play_count} écoutes</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </Card>
-            ))}
-          </div>
-
-          {/* Streaming Platforms */}
-          <div className="text-center mt-12 p-8 bg-warm-black/50 backdrop-blur-sm border border-gold/20 rounded-lg">
-            <h3 className="text-2xl font-bold font-montserrat text-gold mb-4">
-              SUIVEZ-MOI SUR LES PLATEFORMES
-            </h3>
-            <p className="text-muted-foreground font-montserrat mb-6">
-              Retrouvez tous mes sets et productions sur vos plateformes préférées
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button className="bg-[#1DB954] hover:bg-[#1ed760] text-white font-montserrat">
-                Hear.this
-              </Button>
-              <Button className="bg-[#FA57C1] hover:bg-[#fb6bc4] text-white font-montserrat">
-                Apple Music
-              </Button>
-              <Button className="bg-[#FF5500] hover:bg-[#ff6619] text-white font-montserrat">
-                SoundCloud
-              </Button>
-              <Button className="bg-[#FF0000] hover:bg-[#ff1919] text-white font-montserrat">
-                YouTube
-              </Button>
-            </div>
           </div>
         </div>
       </div>

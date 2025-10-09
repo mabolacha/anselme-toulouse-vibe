@@ -122,49 +122,49 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   }, [volume]);
 
   return (
-    <div className="bg-card/80 backdrop-blur-sm border border-gold/20 rounded-lg p-4">
+    <div className="bg-warm-black/50 backdrop-blur-sm border border-gold/20 rounded-lg p-6">
       <audio
         ref={audioRef}
         src={getAudioUrl(filePath)}
         preload="metadata"
       />
       
-      {/* Controls */}
-      <div className="flex items-center gap-4 mb-4">
+      {/* Main Controls */}
+      <div className="flex items-center gap-6 mb-6">
         <Button
           onClick={handlePlay}
           disabled={isLoading}
           size="lg"
-          className="rounded-full w-12 h-12 p-0 bg-gradient-gold hover:bg-gold-muted text-deep-black shadow-gold"
+          className="rounded-full w-16 h-16 p-0 bg-gold hover:bg-gold-muted text-deep-black shadow-gold flex-shrink-0"
         >
           {isLoading ? (
-            <div className="w-4 h-4 border-2 border-deep-black border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-deep-black border-t-transparent rounded-full animate-spin" />
           ) : isPlaying ? (
-            <Pause className="h-5 w-5" />
+            <Pause className="h-7 w-7" />
           ) : (
-            <Play className="h-5 w-5" />
+            <Play className="h-7 w-7 ml-1" />
           )}
         </Button>
         
-        <div className="flex-1">
-          <div className="text-sm font-montserrat text-gold mb-1">{title}</div>
-          <div className="text-xs text-muted-foreground font-montserrat">
+        <div className="flex-1 min-w-0">
+          <div className="text-lg font-bold font-montserrat text-gold mb-1 truncate">{title}</div>
+          <div className="text-sm text-muted-foreground font-montserrat">
             {formatTime(currentTime)} / {formatTime(audioDuration)}
           </div>
         </div>
 
         <Button
           variant="outline"
-          size="sm"
+          size="lg"
           onClick={handleDownload}
-          className="border-gold text-gold hover:bg-gold hover:text-deep-black"
+          className="border-gold/50 text-gold hover:bg-gold/10 rounded-lg w-14 h-14 p-0 flex-shrink-0"
         >
-          <Download className="h-4 w-4" />
+          <Download className="h-5 w-5" />
         </Button>
       </div>
 
       {/* Progress Bar */}
-      <div className="mb-4">
+      <div className="mb-6">
         <Slider
           value={[currentTime]}
           max={audioDuration}
@@ -175,16 +175,16 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       </div>
 
       {/* Volume Control */}
-      <div className="flex items-center gap-3">
-        <Volume2 className="h-4 w-4 text-gold" />
+      <div className="flex items-center gap-4">
+        <Volume2 className="h-5 w-5 text-gold flex-shrink-0" />
         <Slider
           value={[volume]}
           max={100}
           step={1}
           onValueChange={handleVolumeChange}
-          className="flex-1 max-w-24"
+          className="flex-1 max-w-xs"
         />
-        <span className="text-xs text-muted-foreground font-montserrat min-w-[3ch]">
+        <span className="text-sm text-gold font-montserrat font-bold min-w-[3.5ch] flex-shrink-0">
           {volume}%
         </span>
       </div>

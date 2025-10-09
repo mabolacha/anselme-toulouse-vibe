@@ -110,6 +110,42 @@ export type Database = {
         }
         Relationships: []
       }
+      mix_sessions: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          display_order: number
+          embed_url: string
+          id: string
+          is_active: boolean | null
+          platform: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number
+          embed_url: string
+          id?: string
+          is_active?: boolean | null
+          platform: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number
+          embed_url?: string
+          id?: string
+          is_active?: boolean | null
+          platform?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       quotes: {
         Row: {
           budget_range: string | null

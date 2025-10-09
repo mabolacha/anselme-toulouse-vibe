@@ -1,3 +1,4 @@
+import React from 'react';
 import { Play, Download, ExternalLink, Headphones, Music } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -6,6 +7,7 @@ import { useAudioContent } from '@/hooks/useAudioContent';
 
 const MusicSection = () => {
   const { audioContent, loading, error, updatePlayCount } = useAudioContent();
+  const [selectedTrack, setSelectedTrack] = React.useState<string | null>(null);
 
   // Filter content by type
   const tracks = audioContent.filter(item => 
@@ -113,23 +115,26 @@ const MusicSection = () => {
                     {track.description}
                   </p>
 
-                  {/* Actions */}
-                  <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      className="flex-1 bg-gold hover:bg-gold-muted text-deep-black font-montserrat font-bold"
-                    >
-                      <Play className="h-4 w-4 mr-2" />
-                      ÉCOUTER
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="border-gold text-gold hover:bg-gold hover:text-deep-black"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  {/* Audio Player or Actions */}
+                  {selectedTrack === track.id ? (
+                    <AudioPlayer 
+                      title={track.title}
+                      filePath={track.file_path}
+                      duration={track.duration_seconds || 0}
+                      onPlayCountUpdate={() => updatePlayCount(track.id)}
+                    />
+                  ) : (
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        className="flex-1 bg-gold hover:bg-gold-muted text-deep-black font-montserrat font-bold"
+                        onClick={() => setSelectedTrack(track.id)}
+                      >
+                        <Play className="h-4 w-4 mr-2" />
+                        ÉCOUTER
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </Card>
             ))}
@@ -147,41 +152,43 @@ const MusicSection = () => {
                 key={podcast.id}
                 className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 group hover:shadow-gold"
               >
-                <div className="p-6 flex items-center gap-6">
-                  {/* Play Button */}
-                  <div className="flex-shrink-0">
-                    <Button 
-                      size="lg" 
-                      className="rounded-full w-16 h-16 p-0 bg-gradient-gold hover:bg-gold-muted text-deep-black shadow-gold group-hover:shadow-glow transition-all duration-300"
-                    >
-                      <Play className="h-8 w-8" />
-                    </Button>
-                  </div>
+                <div className="p-6">
+                  {selectedTrack === podcast.id ? (
+                    <AudioPlayer 
+                      title={podcast.title}
+                      filePath={podcast.file_path}
+                      duration={podcast.duration_seconds || 0}
+                      onPlayCountUpdate={() => updatePlayCount(podcast.id)}
+                    />
+                  ) : (
+                    <div className="flex items-center gap-6">
+                      {/* Play Button */}
+                      <div className="flex-shrink-0">
+                        <Button 
+                          size="lg" 
+                          className="rounded-full w-16 h-16 p-0 bg-gradient-gold hover:bg-gold-muted text-deep-black shadow-gold group-hover:shadow-glow transition-all duration-300"
+                          onClick={() => setSelectedTrack(podcast.id)}
+                        >
+                          <Play className="h-8 w-8" />
+                        </Button>
+                      </div>
 
-                  {/* Podcast Info */}
-                  <div className="flex-grow">
-                    <h4 className="text-xl font-bold font-montserrat text-foreground group-hover:text-gold transition-colors duration-300 mb-2">
-                      {podcast.title}
-                    </h4>
-                    <p className="text-muted-foreground font-montserrat mb-3">
-                      {podcast.description}
-                    </p>
-                    <div className="flex items-center gap-6 text-sm text-gold font-montserrat">
-                      <span>{formatDuration(podcast.duration_seconds)}</span>
-                      <span>{formatDate(podcast.release_date)}</span>
-                      <span>{podcast.play_count} écoutes</span>
+                      {/* Podcast Info */}
+                      <div className="flex-grow">
+                        <h4 className="text-xl font-bold font-montserrat text-foreground group-hover:text-gold transition-colors duration-300 mb-2">
+                          {podcast.title}
+                        </h4>
+                        <p className="text-muted-foreground font-montserrat mb-3">
+                          {podcast.description}
+                        </p>
+                        <div className="flex items-center gap-6 text-sm text-gold font-montserrat">
+                          <span>{formatDuration(podcast.duration_seconds)}</span>
+                          <span>{formatDate(podcast.release_date)}</span>
+                          <span>{podcast.play_count} écoutes</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Download Button */}
-                  <div className="flex-shrink-0">
-                    <Button 
-                      variant="outline"
-                      className="border-gold text-gold hover:bg-gold hover:text-deep-black"
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  )}
                 </div>
               </Card>
             ))}

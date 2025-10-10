@@ -34,7 +34,12 @@ export const useAuth = () => {
       email,
       password,
       options: {
-        emailRedirectTo: redirectUrl
+        emailRedirectTo: redirectUrl,
+        // Désactiver la confirmation d'email pour les tests
+        // TODO: Réactiver avant la mise en production
+        data: {
+          email_confirm: false
+        }
       }
     });
     return { data, error };

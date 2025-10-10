@@ -3,10 +3,13 @@ import { Play, Download, ExternalLink, Headphones, Music } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import AudioPlayer from '@/components/AudioPlayer';
+import MixPlayerEmbed from '@/components/MixPlayerEmbed';
 import { useAudioContent } from '@/hooks/useAudioContent';
+import { useMixSessions } from '@/hooks/useMixSessions';
 
 const MusicSection = () => {
   const { audioContent, loading, error, updatePlayCount } = useAudioContent();
+  const { mixSessions, loading: mixLoading, error: mixError } = useMixSessions();
   const [selectedTrack, setSelectedTrack] = React.useState<string | null>(null);
 
   // Filter content by type
@@ -80,50 +83,43 @@ const MusicSection = () => {
             MIX SESSIONS
           </h2>
           <div className="max-w-4xl mx-auto space-y-8">
-            {/* Hearthis Player */}
-            <Card className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 overflow-hidden">
-              <div className="p-6">
-                <h3 className="text-xl font-bold font-montserrat text-gold mb-4">
-                  Open Format Mix vol 04 - Afro, RnB-Hip Hop, Kompas, Zouk, DanceHall, Afrobeat, Latino
-                </h3>
-                <div className="rounded-lg overflow-hidden">
-                  <iframe 
-                    scrolling="no" 
-                    style={{ borderRadius: '10px' }}
-                    width="100%" 
-                    height="150" 
-                    src="https://app.hearthis.at/embed/12807924/transparent_black/?hcolor=&color=&style=2&block_size=2&block_space=1&background=1&waveform=0&cover=0&autoplay=0&css=" 
-                    frameBorder="0" 
-                    allowTransparency={true}
-                    allow="autoplay"
-                  />
-                </div>
+            {/* Mix Sessions - Dynamic from Database */}
+            {mixLoading ? (
+              <div className="text-center text-muted-foreground font-montserrat">
+                Chargement des mix sessions...
               </div>
-            </Card>
-
-            {/* YouTube Player - Placeholder */}
-            <Card className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 overflow-hidden">
-              <div className="p-6">
-                <h3 className="text-xl font-bold font-montserrat text-gold mb-4">
-                  YouTube Mix Session
-                </h3>
-                <div className="rounded-lg overflow-hidden bg-warm-black/50 aspect-video flex items-center justify-center">
-                  <p className="text-muted-foreground font-montserrat">Lecteur YouTube à venir</p>
-                </div>
+            ) : mixError ? (
+              <div className="text-center text-red-500 font-montserrat">
+                Erreur: {mixError}
               </div>
-            </Card>
-
-            {/* Mixcloud Player - Placeholder */}
-            <Card className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 overflow-hidden">
-              <div className="p-6">
-                <h3 className="text-xl font-bold font-montserrat text-gold mb-4">
-                  Mixcloud Mix Session
-                </h3>
-                <div className="rounded-lg overflow-hidden bg-warm-black/50 aspect-video flex items-center justify-center">
-                  <p className="text-muted-foreground font-montserrat">Lecteur Mixcloud à venir</p>
-                </div>
+            ) : mixSessions.length === 0 ? (
+              <div className="text-center text-muted-foreground font-montserrat">
+                Aucune mix session disponible pour le moment
               </div>
-            </Card>
+            ) : (
+              mixSessions.map((session) => (
+                <Card 
+                  key={session.id} 
+                  className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 overflow-hidden"
+                >
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold font-montserrat text-gold mb-4">
+                      {session.title}
+                    </h3>
+                    {session.description && (
+                      <p className="text-muted-foreground font-montserrat mb-4 text-sm">
+                        {session.description}
+                      </p>
+                    )}
+                    <MixPlayerEmbed
+                      platform={session.platform as 'hearthis' | 'youtube' | 'mixcloud'}
+                      embedUrl={session.embed_url}
+                      title={session.title}
+                    />
+                  </div>
+                </Card>
+              ))
+            )}
           </div>
 
           {/* Streaming Platforms */}

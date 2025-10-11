@@ -91,7 +91,19 @@ const QuoteModal = ({ open, onOpenChange }: QuoteModalProps) => {
           message: validatedData.message
         }]);
 
-      if (error) throw error;
+      if (error) {
+        // Détecter l'erreur de rate limiting
+        if (error.message?.includes('row-level security policy')) {
+          toast({
+            title: "Limite de demandes atteinte",
+            description: "Vous avez déjà envoyé 3 demandes dans la dernière heure. Veuillez réessayer plus tard.",
+            variant: "destructive",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+        throw error;
+      }
 
       // Send notification emails
       try {

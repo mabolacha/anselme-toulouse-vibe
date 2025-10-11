@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.4"
+    PostgrestVersion: "13.0.5"
   }
   public: {
     Tables: {
@@ -229,6 +229,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_booking_rate_limit: {
+        Args: { p_email: string }
+        Returns: boolean
+      }
+      check_quote_rate_limit: {
+        Args: { p_email: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

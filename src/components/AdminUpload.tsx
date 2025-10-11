@@ -297,7 +297,7 @@ const AdminUpload = () => {
                   id="genre"
                   value={formData.genre}
                   onChange={(e) => setFormData(prev => ({ ...prev, genre: e.target.value }))}
-                  placeholder="House, Techno, Deep House..."
+                  placeholder="Musiques Latines, Afrobeat, Années 80, Pop, House, Dancehall, RnB, Funk..."
                   className={cn(validationErrors.genre && "border-destructive")}
                 />
                 {validationErrors.genre && (

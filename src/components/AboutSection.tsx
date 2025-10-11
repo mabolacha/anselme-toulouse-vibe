@@ -24,11 +24,11 @@ const AboutSection = () => {
             
             <div className="space-y-6">
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Basé à <span className="text-gold font-semibold">Toulouse</span>, je transforme chaque événement en une expérience musicale inoubliable. Je crée des ambiances uniques qui font vibrer les foules.
+                Basé à <span className="text-gold font-semibold">Toulouse et dans toute la région Occitanie</span> (Colomiers, Blagnac, Tournefeuille, Muret, Balma...), je transforme chaque événement en une expérience musicale inoubliable. Je crée des ambiances uniques qui font vibrer les foules.
               </p>
               
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Des années 90 aux hits du moment, en passant par les classiques intemporels, mon style éclectique s'adapte à tous les publics et toutes les occasions. Que ce soit pour vos <span className="text-gold font-semibold">soirées privées</span>, <span className="text-gold font-semibold">mariages</span>, <span className="text-gold font-semibold">événements d'entreprise</span> ou <span className="text-gold font-semibold">festivals</span>, je mets tout mon savoir-faire à votre service.
+                <span className="text-gold font-semibold">Musiques latines, Afrobeat, années 80, Pop, House, Dancehall, RnB, Funk</span>... Mon style éclectique s'adapte à tous les publics et toutes les occasions. Que ce soit pour vos <span className="text-gold font-semibold">soirées privées</span>, <span className="text-gold font-semibold">mariages</span>, <span className="text-gold font-semibold">événements d'entreprise</span> ou <span className="text-gold font-semibold">festivals</span>, je mets tout mon savoir-faire à votre service.
               </p>
               
               <p className="text-lg text-muted-foreground leading-relaxed">

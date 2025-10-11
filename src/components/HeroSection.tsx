@@ -13,7 +13,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 z-0">
         <img 
           src={heroImage} 
-          alt="DJ Anselme, DJ professionnel de Toulouse, mixant lors d'un événement avec équipement professionnel" 
+          alt="DJ Anselme, DJ généraliste à Toulouse spécialisé en musiques latines, Afrobeat, années 80, Pop, House, Dancehall, RnB et Funk, mixant lors d'un événement avec équipement professionnel" 
           className="w-full h-full object-contain object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-deep-black/70 via-deep-black/50 to-warm-black/60"></div>
@@ -30,7 +30,7 @@ const HeroSection = () => {
           
           {/* Subtitle */}
           <div className="text-xl sm:text-2xl md:text-3xl font-light text-foreground mb-4 tracking-wider font-montserrat">
-            DJ PROFESSIONNEL / TOULOUSE
+            DJ GÉNÉRALISTE / TOULOUSE & OCCITANIE
           </div>
           
           {/* Location Badge */}

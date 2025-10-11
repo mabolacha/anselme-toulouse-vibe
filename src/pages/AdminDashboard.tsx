@@ -3,10 +3,11 @@ import { Navigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminBookings from '@/components/AdminBookings';
 import AdminUpload from '@/components/AdminUpload';
+import AdminMixSessions from '@/components/AdminMixSessions';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdmin } from '@/hooks/useAdmin';
 import { Button } from '@/components/ui/button';
-import { LogOut, Music, Calendar, Upload } from 'lucide-react';
+import { LogOut, Music, Calendar, Upload, Radio } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
@@ -91,7 +92,7 @@ const AdminDashboard = () => {
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs defaultValue="bookings" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsList className="grid w-full grid-cols-3 mb-8">
               <TabsTrigger value="bookings" className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 Réservations & Devis
@@ -99,6 +100,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="upload" className="flex items-center gap-2">
                 <Upload className="h-4 w-4" />
                 Gestion Audio
+              </TabsTrigger>
+              <TabsTrigger value="mixsessions" className="flex items-center gap-2">
+                <Radio className="h-4 w-4" />
+                Mix Sessions
               </TabsTrigger>
             </TabsList>
 
@@ -108,6 +113,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="upload">
               <AdminUpload />
+            </TabsContent>
+
+            <TabsContent value="mixsessions">
+              <AdminMixSessions />
             </TabsContent>
           </Tabs>
         </div>

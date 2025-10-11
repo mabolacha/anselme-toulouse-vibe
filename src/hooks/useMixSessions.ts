@@ -18,14 +18,19 @@ export const useMixSessions = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchMixSessions = async () => {
+  const fetchMixSessions = async (includeInactive = false) => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      let query = supabase
         .from('mix_sessions')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order', { ascending: true });
+        .select('*');
+      
+      // Filter by active status only if not including inactive sessions
+      if (!includeInactive) {
+        query = query.eq('is_active', true);
+      }
+      
+      const { data, error } = await query.order('display_order', { ascending: true });
 
       if (error) throw error;
       setMixSessions((data as MixSession[]) || []);
@@ -41,10 +46,54 @@ export const useMixSessions = () => {
     fetchMixSessions();
   }, []);
 
+  const createMixSession = async (data: Omit<MixSession, 'id' | 'created_at' | 'updated_at'>) => {
+    try {
+      const { error } = await supabase
+        .from('mix_sessions')
+        .insert(data);
+      
+      if (error) throw error;
+      return { error: null };
+    } catch (err) {
+      return { error: err instanceof Error ? err : new Error('Erreur lors de la création') };
+    }
+  };
+
+  const updateMixSession = async (id: string, data: Partial<Omit<MixSession, 'id' | 'created_at' | 'updated_at'>>) => {
+    try {
+      const { error } = await supabase
+        .from('mix_sessions')
+        .update(data)
+        .eq('id', id);
+      
+      if (error) throw error;
+      return { error: null };
+    } catch (err) {
+      return { error: err instanceof Error ? err : new Error('Erreur lors de la mise à jour') };
+    }
+  };
+
+  const deleteMixSession = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('mix_sessions')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      return { error: null };
+    } catch (err) {
+      return { error: err instanceof Error ? err : new Error('Erreur lors de la suppression') };
+    }
+  };
+
   return {
     mixSessions,
     loading,
     error,
-    refetch: fetchMixSessions
+    refetch: fetchMixSessions,
+    createMixSession,
+    updateMixSession,
+    deleteMixSession
   };
 };

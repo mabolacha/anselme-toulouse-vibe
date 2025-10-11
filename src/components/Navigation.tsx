@@ -1,22 +1,22 @@
-import { useState } from 'react';
-import { Menu, X, Instagram, Facebook, Twitter, Youtube, Music } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { Menu, X, Instagram, Facebook, Twitter, Youtube, Music } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { name: 'Accueil', href: '#home' },
-    { name: 'À Propos', href: '#about' },
-    { name: 'Musique', href: '#music' },
-    { name: 'Événements', href: '#events' },
-    { name: 'Contact', href: '#contact' }
+    { name: "Accueil", href: "#home" },
+    { name: "À Propos", href: "#about" },
+    { name: "Musique", href: "#music" },
+    { name: "Événements", href: "#events" },
+    { name: "Contact", href: "#contact" },
   ];
 
   const socialLinks = [
-    { icon: Instagram, href: 'https://www.instagram.com/dj_anselme', label: 'Instagram' },
-    { icon: Youtube, href: 'https://www.youtube.com/@djanselme', label: 'YouTube' },
-    { icon: Facebook, href: 'https://www.facebook.com/djanselme', label: 'Facebook' }
+    { icon: Instagram, href: "https://www.instagram.com/dj_anselme", label: "Instagram" },
+    { icon: Youtube, href: "https://www.youtube.com/@djanselme", label: "YouTube" },
+    { icon: Facebook, href: "https://www.facebook.com/djanselme31", label: "Facebook" },
   ];
 
   return (

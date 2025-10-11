@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, Mail, Phone, User, MapPin, Users, Euro, MessageSquare, Clock, CheckCircle, XCircle } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Calendar, Mail, Phone, User, MapPin, Users, Euro, MessageSquare, Clock, CheckCircle, XCircle, Search, Copy, Send } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import AdminStats from '@/components/AdminStats';
 
 interface Booking {
   id: string;
@@ -43,6 +46,8 @@ const AdminBookings = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const { toast } = useToast();
 
   const fetchData = async () => {
@@ -154,13 +159,50 @@ const AdminBookings = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return <Badge className="bg-green-500 text-white">Confirmé</Badge>;
+        return <Badge variant="default" className="bg-green-600 hover:bg-green-700">Confirmé</Badge>;
       case 'rejected':
-        return <Badge className="bg-red-500 text-white">Refusé</Badge>;
+        return <Badge variant="destructive">Refusé</Badge>;
       default:
-        return <Badge className="bg-gold text-deep-black">En attente</Badge>;
+        return <Badge variant="secondary" className="bg-gold/20 text-gold border-gold">En attente</Badge>;
     }
   };
+
+  const copyContactInfo = (name: string, email: string, phone: string | null) => {
+    const info = `${name}\n${email}${phone ? `\n${phone}` : ''}`;
+    navigator.clipboard.writeText(info);
+    toast({
+      title: "Copié !",
+      description: "Les informations de contact ont été copiées",
+    });
+  };
+
+  const openEmailClient = (email: string, name: string, type: string) => {
+    const subject = encodeURIComponent(`Re: Demande ${type}`);
+    const body = encodeURIComponent(`Bonjour ${name},\n\nMerci pour votre demande concernant votre ${type}.\n\nCordialement,\nDJ Anselme`);
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+  };
+
+  const filteredBookings = useMemo(() => {
+    return bookings.filter(booking => {
+      const matchesSearch = 
+        booking.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        booking.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        booking.event_type.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === 'all' || booking.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [bookings, searchQuery, statusFilter]);
+
+  const filteredQuotes = useMemo(() => {
+    return quotes.filter(quote => {
+      const matchesSearch = 
+        quote.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        quote.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        quote.event_type.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === 'all' || quote.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [quotes, searchQuery, statusFilter]);
 
   if (loading) {
     return (
@@ -186,26 +228,51 @@ const AdminBookings = () => {
           </p>
         </div>
 
+        <AdminStats bookings={bookings} quotes={quotes} />
+
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Rechercher par nom, email ou type d'événement..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full sm:w-48">
+              <SelectValue placeholder="Filtrer par statut" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tous les statuts</SelectItem>
+              <SelectItem value="pending">En attente</SelectItem>
+              <SelectItem value="confirmed">Confirmé</SelectItem>
+              <SelectItem value="rejected">Refusé</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         <Tabs defaultValue="bookings" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="bookings">
-              Réservations ({bookings.length})
+              Réservations ({filteredBookings.length})
             </TabsTrigger>
             <TabsTrigger value="quotes">
-              Devis ({quotes.length})
+              Devis ({filteredQuotes.length})
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="bookings">
             <div className="space-y-6">
-              {bookings.length === 0 ? (
+              {filteredBookings.length === 0 ? (
                 <Card className="p-8 text-center bg-card/80 backdrop-blur-sm border-gold/20">
                   <p className="text-muted-foreground font-montserrat">
-                    Aucune demande de réservation pour le moment
+                    {searchQuery || statusFilter !== 'all' ? 'Aucun résultat trouvé' : 'Aucune demande de réservation pour le moment'}
                   </p>
                 </Card>
               ) : (
-                bookings.map((booking) => (
+                filteredBookings.map((booking) => (
                   <Card key={booking.id} className="p-6 bg-card/80 backdrop-blur-sm border-gold/20">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-center gap-3">
@@ -278,7 +345,26 @@ const AdminBookings = () => {
                       </div>
                     )}
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => copyContactInfo(booking.name, booking.email, booking.phone)}
+                        className="border-gold/50 hover:bg-gold/10"
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copier infos
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openEmailClient(booking.email, booking.name, 'réservation')}
+                        className="border-gold/50 hover:bg-gold/10"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        Répondre
+                      </Button>
+                      <div className="flex-1" />
                       <Button
                         size="sm"
                         onClick={() => updateBookingStatus(booking.id, 'confirmed')}
@@ -313,14 +399,14 @@ const AdminBookings = () => {
 
           <TabsContent value="quotes">
             <div className="space-y-6">
-              {quotes.length === 0 ? (
+              {filteredQuotes.length === 0 ? (
                 <Card className="p-8 text-center bg-card/80 backdrop-blur-sm border-gold/20">
                   <p className="text-muted-foreground font-montserrat">
-                    Aucune demande de devis pour le moment
+                    {searchQuery || statusFilter !== 'all' ? 'Aucun résultat trouvé' : 'Aucune demande de devis pour le moment'}
                   </p>
                 </Card>
               ) : (
-                quotes.map((quote) => (
+                filteredQuotes.map((quote) => (
                   <Card key={quote.id} className="p-6 bg-card/80 backdrop-blur-sm border-gold/20">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-center gap-3">
@@ -405,7 +491,26 @@ const AdminBookings = () => {
                       </div>
                     )}
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => copyContactInfo(quote.name, quote.email, quote.phone)}
+                        className="border-gold/50 hover:bg-gold/10"
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copier infos
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openEmailClient(quote.email, quote.name, 'devis')}
+                        className="border-gold/50 hover:bg-gold/10"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        Répondre
+                      </Button>
+                      <div className="flex-1" />
                       <Button
                         size="sm"
                         onClick={() => updateQuoteStatus(quote.id, 'confirmed')}

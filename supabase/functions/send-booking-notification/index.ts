@@ -84,7 +84,7 @@ const handler = async (req: Request): Promise<Response> => {
         .content p { 
           line-height: 1.6; 
           margin-bottom: 20px; 
-          color: #E0E0E0; 
+          color: #FFFFFF; 
         }
         .details { 
           background: rgba(212, 175, 55, 0.05); 
@@ -113,7 +113,7 @@ const handler = async (req: Request): Promise<Response> => {
         }
         .footer p { 
           margin: 5px 0; 
-          color: #888; 
+          color: #FFFFFF; 
           font-size: 14px; 
         }
         .footer a { 
@@ -278,7 +278,7 @@ const handler = async (req: Request): Promise<Response> => {
             </div>
 
             <p>En attendant, n'hésitez pas à :</p>
-            <ul style="color: #E0E0E0; line-height: 1.8;">
+            <ul style="color: #FFFFFF; line-height: 1.8;">
               <li>Découvrir mes <a href="https://djanselme.com#music" style="color: #D4AF37;">derniers mixes</a></li>
               <li>Explorer mes <a href="https://djanselme.com#events" style="color: #D4AF37;">événements à venir</a></li>
               <li>Me contacter si vous avez des questions : <a href="mailto:info@djanselme.com" style="color: #D4AF37;">info@djanselme.com</a></li>

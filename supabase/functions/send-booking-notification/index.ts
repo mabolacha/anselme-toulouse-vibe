@@ -301,7 +301,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send owner notification
     console.log("Sending owner notification to a.magaia@gmail.com");
     const ownerEmailResponse = await resend.emails.send({
-      from: "DJ Anselme <onboarding@resend.dev>",
+      from: "DJ Anselme <info@djanselme.com>",
       to: ["a.magaia@gmail.com"],
       subject: ownerSubject,
       html: ownerHtml,
@@ -317,7 +317,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send client confirmation
     console.log("Sending client confirmation to", email);
     const clientEmailResponse = await resend.emails.send({
-      from: "DJ Anselme <onboarding@resend.dev>",
+      from: "DJ Anselme <info@djanselme.com>",
       reply_to: "info@djanselme.com",
       to: [email],
       subject: clientSubject,

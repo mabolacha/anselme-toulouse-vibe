@@ -8,6 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar, Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { bookingSchema } from '@/lib/validation';
+import { z } from 'zod';
+import { cn } from '@/lib/utils';
 
 interface BookingModalProps {
   open: boolean;
@@ -17,6 +20,7 @@ interface BookingModalProps {
 const BookingModal = ({ open, onOpenChange }: BookingModalProps) => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -61,20 +65,24 @@ const BookingModal = ({ open, onOpenChange }: BookingModalProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setValidationErrors({});
 
     try {
+      // Validation Zod
+      const validatedData = bookingSchema.parse(formData);
+
       const { error } = await supabase
         .from('bookings')
         .insert([{
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          event_type: formData.event_type,
-          event_date: formData.event_date || null,
-          guest_count: formData.guest_count ? parseInt(formData.guest_count) : null,
-          venue: formData.venue || null,
-          budget_range: formData.budget_range || null,
-          message: formData.message || null
+          name: validatedData.name,
+          email: validatedData.email,
+          phone: validatedData.phone || null,
+          event_type: validatedData.event_type,
+          event_date: validatedData.event_date || null,
+          guest_count: validatedData.guest_count ? parseInt(validatedData.guest_count) : null,
+          venue: validatedData.venue || null,
+          budget_range: validatedData.budget_range || null,
+          message: validatedData.message
         }]);
 
       if (error) throw error;
@@ -87,12 +95,29 @@ const BookingModal = ({ open, onOpenChange }: BookingModalProps) => {
       resetForm();
       onOpenChange(false);
     } catch (error) {
-      console.error('Error submitting booking:', error);
-      toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'envoi de votre réservation. Veuillez réessayer.",
-        variant: "destructive",
-      });
+      if (error instanceof z.ZodError) {
+        const errors: Record<string, string> = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            errors[err.path[0].toString()] = err.message;
+          }
+        });
+        setValidationErrors(errors);
+        toast({
+          title: "Erreur de validation",
+          description: "Veuillez vérifier les champs du formulaire",
+          variant: "destructive",
+        });
+      } else {
+        if (import.meta.env.DEV) {
+          console.error('Error submitting booking:', error);
+        }
+        toast({
+          title: "Erreur",
+          description: "Une erreur est survenue lors de l'envoi de votre réservation. Veuillez réessayer.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -119,9 +144,15 @@ const BookingModal = ({ open, onOpenChange }: BookingModalProps) => {
                 required
                 value={formData.name}
                 onChange={handleInputChange}
-                className="bg-background/50 border-gold/30 focus:border-gold"
+                className={cn(
+                  "bg-background/50 border-gold/30 focus:border-gold",
+                  validationErrors.name && "border-destructive focus:border-destructive"
+                )}
                 placeholder="Votre nom et prénom"
               />
+              {validationErrors.name && (
+                <p className="text-sm text-destructive">{validationErrors.name}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground font-montserrat">Email *</Label>
@@ -132,9 +163,15 @@ const BookingModal = ({ open, onOpenChange }: BookingModalProps) => {
                 required
                 value={formData.email}
                 onChange={handleInputChange}
-                className="bg-background/50 border-gold/30 focus:border-gold"
+                className={cn(
+                  "bg-background/50 border-gold/30 focus:border-gold",
+                  validationErrors.email && "border-destructive focus:border-destructive"
+                )}
                 placeholder="votre@email.com"
               />
+              {validationErrors.email && (
+                <p className="text-sm text-destructive">{validationErrors.email}</p>
+              )}
             </div>
           </div>
 
@@ -147,9 +184,15 @@ const BookingModal = ({ open, onOpenChange }: BookingModalProps) => {
                 type="tel"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="bg-background/50 border-gold/30 focus:border-gold"
+                className={cn(
+                  "bg-background/50 border-gold/30 focus:border-gold",
+                  validationErrors.phone && "border-destructive focus:border-destructive"
+                )}
                 placeholder="06 12 34 56 78"
               />
+              {validationErrors.phone && (
+                <p className="text-sm text-destructive">{validationErrors.phone}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="event_type" className="text-foreground font-montserrat">Type d'événement *</Label>
@@ -233,9 +276,15 @@ const BookingModal = ({ open, onOpenChange }: BookingModalProps) => {
               required
               value={formData.message}
               onChange={handleInputChange}
-              className="bg-background/50 border-gold/30 focus:border-gold min-h-[120px]"
+              className={cn(
+                "bg-background/50 border-gold/30 focus:border-gold min-h-[120px]",
+                validationErrors.message && "border-destructive focus:border-destructive"
+              )}
               placeholder="Décrivez votre événement, vos attentes musicales, l'ambiance souhaitée..."
             />
+            {validationErrors.message && (
+              <p className="text-sm text-destructive">{validationErrors.message}</p>
+            )}
           </div>
 
           <div className="flex gap-4 pt-4">

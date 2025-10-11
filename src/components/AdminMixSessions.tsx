@@ -12,6 +12,9 @@ import { useMixSessions } from '@/hooks/useMixSessions';
 import { parseEmbedUrl, isValidEmbedUrl } from '@/utils/embedUrlParser';
 import MixPlayerEmbed from '@/components/MixPlayerEmbed';
 import { Plus, Edit, Trash2, Eye, EyeOff, Loader2, Save, X } from 'lucide-react';
+import { mixSessionSchema } from '@/lib/validation';
+import { z } from 'zod';
+import { cn } from '@/lib/utils';
 
 interface MixSessionForm {
   title: string;
@@ -35,6 +38,7 @@ const AdminMixSessions = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   
   const [form, setForm] = useState<MixSessionForm>({
     title: '',
@@ -107,16 +111,8 @@ const AdminMixSessions = () => {
   // Submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationErrors({});
     
-    if (!form.title.trim()) {
-      toast({
-        title: "Erreur",
-        description: "Le titre est obligatoire",
-        variant: "destructive"
-      });
-      return;
-    }
-
     if (!form.embedUrl || !isValidEmbedUrl(form.embedUrl, form.platform)) {
       toast({
         title: "Erreur",
@@ -129,14 +125,24 @@ const AdminMixSessions = () => {
     setSubmitting(true);
 
     try {
+      // Validation Zod
+      const validatedData = mixSessionSchema.parse({
+        title: form.title,
+        description: form.description,
+        platform: form.platform,
+        embedUrl: form.embedUrl,
+        displayOrder: form.displayOrder,
+        isActive: form.isActive
+      });
+
       if (editingId) {
         const { error } = await updateMixSession(editingId, {
-          title: form.title,
-          description: form.description || null,
-          platform: form.platform,
-          embed_url: form.embedUrl,
-          display_order: form.displayOrder,
-          is_active: form.isActive
+          title: validatedData.title,
+          description: validatedData.description || null,
+          platform: validatedData.platform,
+          embed_url: validatedData.embedUrl,
+          display_order: validatedData.displayOrder,
+          is_active: validatedData.isActive
         });
 
         if (error) throw error;
@@ -147,12 +153,12 @@ const AdminMixSessions = () => {
         });
       } else {
         const { error } = await createMixSession({
-          title: form.title,
-          description: form.description || null,
-          platform: form.platform,
-          embed_url: form.embedUrl,
-          display_order: form.displayOrder,
-          is_active: form.isActive
+          title: validatedData.title,
+          description: validatedData.description || null,
+          platform: validatedData.platform,
+          embed_url: validatedData.embedUrl,
+          display_order: validatedData.displayOrder,
+          is_active: validatedData.isActive
         });
 
         if (error) throw error;
@@ -166,11 +172,29 @@ const AdminMixSessions = () => {
       resetForm();
       refetch(true);
     } catch (error: any) {
-      toast({
-        title: "Erreur",
-        description: error.message || "Une erreur est survenue",
-        variant: "destructive"
-      });
+      if (error instanceof z.ZodError) {
+        const errors: Record<string, string> = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            errors[err.path[0].toString()] = err.message;
+          }
+        });
+        setValidationErrors(errors);
+        toast({
+          title: "Erreur de validation",
+          description: "Veuillez vérifier les champs du formulaire",
+          variant: "destructive",
+        });
+      } else {
+        if (import.meta.env.DEV) {
+          console.error('Error message:', error.message);
+        }
+        toast({
+          title: "Erreur",
+          description: error.message || "Une erreur est survenue",
+          variant: "destructive"
+        });
+      }
     } finally {
       setSubmitting(false);
     }
@@ -277,9 +301,12 @@ const AdminMixSessions = () => {
                       value={form.title}
                       onChange={(e) => setForm(prev => ({ ...prev, title: e.target.value }))}
                       placeholder="Open Format Mix vol 04"
-                      className="font-montserrat"
+                      className={cn("font-montserrat", validationErrors.title && "border-destructive")}
                       required
                     />
+                    {validationErrors.title && (
+                      <p className="text-sm text-destructive mt-1">{validationErrors.title}</p>
+                    )}
                   </div>
 
                   <div>
@@ -289,8 +316,11 @@ const AdminMixSessions = () => {
                       value={form.description}
                       onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
                       placeholder="Description du mix..."
-                      className="font-montserrat min-h-[80px]"
+                      className={cn("font-montserrat min-h-[80px]", validationErrors.description && "border-destructive")}
                     />
+                    {validationErrors.description && (
+                      <p className="text-sm text-destructive mt-1">{validationErrors.description}</p>
+                    )}
                   </div>
 
                   <div>
@@ -322,15 +352,18 @@ const AdminMixSessions = () => {
                       value={rawInput}
                       onChange={(e) => handleRawInputChange(e.target.value)}
                       placeholder={`<iframe src="https://app.hearthis.at/embed/..."></iframe>`}
-                      className="font-montserrat font-mono text-xs min-h-[120px]"
+                      className={cn("font-montserrat font-mono text-xs min-h-[120px]", validationErrors.embedUrl && "border-destructive")}
                       required
                     />
-                    {previewUrl && (
+                    {validationErrors.embedUrl && (
+                      <p className="text-sm text-destructive mt-1">{validationErrors.embedUrl}</p>
+                    )}
+                    {!validationErrors.embedUrl && previewUrl && (
                       <p className="text-xs text-green-500 font-montserrat mt-1">
                         ✓ URL d'embed valide détectée
                       </p>
                     )}
-                    {rawInput && !previewUrl && (
+                    {!validationErrors.embedUrl && rawInput && !previewUrl && (
                       <p className="text-xs text-destructive font-montserrat mt-1">
                         ✗ URL invalide ou format non reconnu
                       </p>

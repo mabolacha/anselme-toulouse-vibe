@@ -35,7 +35,9 @@ export const useAudioContent = () => {
       setAudioContent(data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur lors du chargement');
-      console.error('Error fetching audio content:', err);
+      if (import.meta.env.DEV) {
+        console.error('Error fetching audio content:', err);
+      }
     } finally {
       setLoading(false);
     }

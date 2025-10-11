@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAudioContent } from '@/hooks/useAudioContent';
+import { audioUploadSchema, validateAudioFile } from '@/lib/validation';
+import { z } from 'zod';
+import { cn } from '@/lib/utils';
 
 interface AudioFileData {
   title: string;
@@ -21,6 +24,7 @@ interface AudioFileData {
 const AdminUpload = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState<AudioFileData>({
     title: '',
     description: '',
@@ -34,47 +38,57 @@ const AdminUpload = () => {
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && file.type.startsWith('audio/')) {
-      setSelectedFile(file);
-      // Auto-fill title from filename
-      const nameWithoutExt = file.name.replace(/\.[^/.]+$/, '');
-      setFormData(prev => ({ ...prev, title: nameWithoutExt }));
-    } else {
-      toast({
-        title: "Erreur",
-        description: "Veuillez sélectionner un fichier audio valide",
-        variant: "destructive"
-      });
-    }
-  };
+    if (!file) return;
 
-  const handleUpload = async () => {
-    if (!selectedFile || !formData.title) {
+    const fileValidation = validateAudioFile(file);
+    if (!fileValidation.valid) {
       toast({
         title: "Erreur",
-        description: "Veuillez remplir tous les champs obligatoires",
+        description: fileValidation.error,
         variant: "destructive"
       });
       return;
     }
 
-    setUploading(true);
+    setSelectedFile(file);
+    const nameWithoutExt = file.name.replace(/\.[^/.]+$/, '');
+    setFormData(prev => ({ ...prev, title: nameWithoutExt }));
+  };
 
+  const handleUpload = async () => {
+    setValidationErrors({});
+
+    // Validation du fichier
+    const fileValidation = validateAudioFile(selectedFile);
+    if (!fileValidation.valid) {
+      toast({
+        title: "Erreur",
+        description: fileValidation.error,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validation des métadonnées
     try {
+      const validatedData = audioUploadSchema.parse(formData);
+      
+      setUploading(true);
+
       // Create file path with folder structure
-      const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${formData.mix_type}s/${Date.now()}-${formData.title.replace(/[^a-zA-Z0-9]/g, '-')}.${fileExt}`;
+      const fileExt = selectedFile!.name.split('.').pop();
+      const fileName = `${validatedData.mix_type}s/${Date.now()}-${validatedData.title.replace(/[^a-zA-Z0-9]/g, '-')}.${fileExt}`;
 
       // Upload file to Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from('audio-content')
-        .upload(fileName, selectedFile);
+        .upload(fileName, selectedFile!);
 
       if (uploadError) throw uploadError;
 
       // Get audio duration (if possible)
       const audio = new Audio();
-      const audioUrl = URL.createObjectURL(selectedFile);
+      const audioUrl = URL.createObjectURL(selectedFile!);
       audio.src = audioUrl;
       
       const duration = await new Promise<number>((resolve) => {
@@ -90,14 +104,14 @@ const AdminUpload = () => {
       const { error: dbError } = await supabase
         .from('audio_content')
         .insert({
-          title: formData.title,
-          description: formData.description || null,
+          title: validatedData.title,
+          description: validatedData.description || null,
           file_path: fileName,
-          file_size: selectedFile.size,
+          file_size: selectedFile!.size,
           duration_seconds: duration,
-          genre: formData.genre || null,
-          mix_type: formData.mix_type,
-          release_date: formData.release_date || null,
+          genre: validatedData.genre || null,
+          mix_type: validatedData.mix_type,
+          release_date: validatedData.release_date || null,
           play_count: 0,
           featured: false
         });
@@ -126,12 +140,29 @@ const AdminUpload = () => {
       URL.revokeObjectURL(audioUrl);
 
     } catch (error) {
-      console.error('Upload error:', error);
-      toast({
-        title: "Erreur",
-        description: "Erreur lors de l'upload. Veuillez réessayer.",
-        variant: "destructive"
-      });
+      if (error instanceof z.ZodError) {
+        const errors: Record<string, string> = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            errors[err.path[0].toString()] = err.message;
+          }
+        });
+        setValidationErrors(errors);
+        toast({
+          title: "Erreur de validation",
+          description: "Veuillez vérifier les champs du formulaire",
+          variant: "destructive",
+        });
+      } else {
+        if (import.meta.env.DEV) {
+          console.error('Upload error:', error);
+        }
+        toast({
+          title: "Erreur",
+          description: "Erreur lors de l'upload. Veuillez réessayer.",
+          variant: "destructive"
+        });
+      }
     } finally {
       setUploading(false);
     }
@@ -161,7 +192,9 @@ const AdminUpload = () => {
 
       refetch();
     } catch (error) {
-      console.error('Delete error:', error);
+      if (import.meta.env.DEV) {
+        console.error('Delete error:', error);
+      }
       toast({
         title: "Erreur",
         description: "Erreur lors de la suppression",
@@ -234,7 +267,11 @@ const AdminUpload = () => {
                   value={formData.title}
                   onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                   placeholder="Nom de votre track"
+                  className={cn(validationErrors.title && "border-destructive")}
                 />
+                {validationErrors.title && (
+                  <p className="text-sm text-destructive mt-1">{validationErrors.title}</p>
+                )}
               </div>
 
               {/* Description */}
@@ -246,7 +283,11 @@ const AdminUpload = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Description de votre création..."
                   rows={3}
+                  className={cn(validationErrors.description && "border-destructive")}
                 />
+                {validationErrors.description && (
+                  <p className="text-sm text-destructive mt-1">{validationErrors.description}</p>
+                )}
               </div>
 
               {/* Genre */}
@@ -257,7 +298,11 @@ const AdminUpload = () => {
                   value={formData.genre}
                   onChange={(e) => setFormData(prev => ({ ...prev, genre: e.target.value }))}
                   placeholder="House, Techno, Deep House..."
+                  className={cn(validationErrors.genre && "border-destructive")}
                 />
+                {validationErrors.genre && (
+                  <p className="text-sm text-destructive mt-1">{validationErrors.genre}</p>
+                )}
               </div>
 
               {/* Mix Type */}

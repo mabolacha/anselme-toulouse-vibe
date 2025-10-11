@@ -8,11 +8,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { Lock, Music } from 'lucide-react';
+import { signInSchema, signUpSchema } from '@/lib/validation';
+import { z } from 'zod';
+import { cn } from '@/lib/utils';
 
 const Auth = () => {
   const { user, signIn, signUp } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -33,18 +37,18 @@ const Auth = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) {
-      toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs",
-        variant: "destructive"
-      });
-      return;
-    }
+    setValidationErrors({});
 
-    setLoading(true);
     try {
-      const { error } = await signIn(formData.email, formData.password);
+      // Validation Zod
+      const validatedData = signInSchema.parse({
+        email: formData.email,
+        password: formData.password
+      });
+
+      setLoading(true);
+      const { error } = await signIn(validatedData.email, validatedData.password);
+      
       if (error) {
         toast({
           title: "Erreur de connexion",
@@ -60,11 +64,26 @@ const Auth = () => {
         });
       }
     } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Une erreur inattendue s'est produite",
-        variant: "destructive"
-      });
+      if (error instanceof z.ZodError) {
+        const errors: Record<string, string> = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            errors[err.path[0].toString()] = err.message;
+          }
+        });
+        setValidationErrors(errors);
+        toast({
+          title: "Erreur de validation",
+          description: Object.values(errors)[0],
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Erreur",
+          description: "Une erreur inattendue s'est produite",
+          variant: "destructive"
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -72,36 +91,15 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.email || !formData.password || !formData.confirmPassword) {
-      toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs",
-        variant: "destructive"
-      });
-      return;
-    }
+    setValidationErrors({});
 
-    if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: "Erreur",
-        description: "Les mots de passe ne correspondent pas",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      toast({
-        title: "Erreur",
-        description: "Le mot de passe doit contenir au moins 6 caractères",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setLoading(true);
     try {
-      const { error } = await signUp(formData.email, formData.password);
+      // Validation Zod (inclut la vérification password === confirmPassword)
+      const validatedData = signUpSchema.parse(formData);
+
+      setLoading(true);
+      const { error } = await signUp(validatedData.email, validatedData.password);
+      
       if (error) {
         if (error.message.includes('already registered')) {
           toast({
@@ -123,11 +121,26 @@ const Auth = () => {
         });
       }
     } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Une erreur inattendue s'est produite",
-        variant: "destructive"
-      });
+      if (error instanceof z.ZodError) {
+        const errors: Record<string, string> = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            errors[err.path[0].toString()] = err.message;
+          }
+        });
+        setValidationErrors(errors);
+        toast({
+          title: "Erreur de validation",
+          description: Object.values(errors)[0],
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Erreur",
+          description: "Une erreur inattendue s'est produite",
+          variant: "destructive"
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -166,8 +179,12 @@ const Auth = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="votre@email.com"
+                    className={cn(validationErrors.email && "border-destructive")}
                     required
                   />
+                  {validationErrors.email && (
+                    <p className="text-sm text-destructive mt-1">{validationErrors.email}</p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="signin-password">Mot de passe</Label>
@@ -178,8 +195,12 @@ const Auth = () => {
                     value={formData.password}
                     onChange={handleInputChange}
                     placeholder="••••••••"
+                    className={cn(validationErrors.password && "border-destructive")}
                     required
                   />
+                  {validationErrors.password && (
+                    <p className="text-sm text-destructive mt-1">{validationErrors.password}</p>
+                  )}
                 </div>
                 <Button
                   type="submit"
@@ -212,8 +233,12 @@ const Auth = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="votre@email.com"
+                    className={cn(validationErrors.email && "border-destructive")}
                     required
                   />
+                  {validationErrors.email && (
+                    <p className="text-sm text-destructive mt-1">{validationErrors.email}</p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="signup-password">Mot de passe</Label>
@@ -224,8 +249,12 @@ const Auth = () => {
                     value={formData.password}
                     onChange={handleInputChange}
                     placeholder="••••••••"
+                    className={cn(validationErrors.password && "border-destructive")}
                     required
                   />
+                  {validationErrors.password && (
+                    <p className="text-sm text-destructive mt-1">{validationErrors.password}</p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="confirm-password">Confirmer le mot de passe</Label>
@@ -236,8 +265,12 @@ const Auth = () => {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     placeholder="••••••••"
+                    className={cn(validationErrors.confirmPassword && "border-destructive")}
                     required
                   />
+                  {validationErrors.confirmPassword && (
+                    <p className="text-sm text-destructive mt-1">{validationErrors.confirmPassword}</p>
+                  )}
                 </div>
                 <Button
                   type="submit"

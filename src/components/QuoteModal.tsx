@@ -8,6 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { FileText, Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { quoteSchema } from '@/lib/validation';
+import { z } from 'zod';
+import { cn } from '@/lib/utils';
 
 interface QuoteModalProps {
   open: boolean;
@@ -17,6 +20,7 @@ interface QuoteModalProps {
 const QuoteModal = ({ open, onOpenChange }: QuoteModalProps) => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -65,22 +69,26 @@ const QuoteModal = ({ open, onOpenChange }: QuoteModalProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setValidationErrors({});
 
     try {
+      // Validation Zod
+      const validatedData = quoteSchema.parse(formData);
+
       const { error } = await supabase
         .from('quotes')
         .insert([{
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          event_type: formData.event_type,
-          event_date: formData.event_date || null,
-          venue: formData.venue || null,
-          guest_count: formData.guest_count ? parseInt(formData.guest_count) : null,
-          duration_hours: formData.duration_hours ? parseInt(formData.duration_hours) : null,
-          special_requests: formData.special_requests || null,
-          budget_range: formData.budget_range || null,
-          message: formData.message || null
+          name: validatedData.name,
+          email: validatedData.email,
+          phone: validatedData.phone || null,
+          event_type: validatedData.event_type,
+          event_date: validatedData.event_date || null,
+          venue: validatedData.venue || null,
+          guest_count: validatedData.guest_count ? parseInt(validatedData.guest_count) : null,
+          duration_hours: validatedData.duration_hours ? parseInt(validatedData.duration_hours) : null,
+          special_requests: validatedData.special_requests || null,
+          budget_range: validatedData.budget_range || null,
+          message: validatedData.message
         }]);
 
       if (error) throw error;
@@ -93,12 +101,29 @@ const QuoteModal = ({ open, onOpenChange }: QuoteModalProps) => {
       resetForm();
       onOpenChange(false);
     } catch (error) {
-      console.error('Error submitting quote:', error);
-      toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'envoi de votre demande. Veuillez réessayer.",
-        variant: "destructive",
-      });
+      if (error instanceof z.ZodError) {
+        const errors: Record<string, string> = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            errors[err.path[0].toString()] = err.message;
+          }
+        });
+        setValidationErrors(errors);
+        toast({
+          title: "Erreur de validation",
+          description: "Veuillez vérifier les champs du formulaire",
+          variant: "destructive",
+        });
+      } else {
+        if (import.meta.env.DEV) {
+          console.error('Error submitting quote:', error);
+        }
+        toast({
+          title: "Erreur",
+          description: "Une erreur est survenue lors de l'envoi de votre demande. Veuillez réessayer.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -125,9 +150,15 @@ const QuoteModal = ({ open, onOpenChange }: QuoteModalProps) => {
                 required
                 value={formData.name}
                 onChange={handleInputChange}
-                className="bg-background/50 border-gold/30 focus:border-gold"
+                className={cn(
+                  "bg-background/50 border-gold/30 focus:border-gold",
+                  validationErrors.name && "border-destructive focus:border-destructive"
+                )}
                 placeholder="Votre nom et prénom"
               />
+              {validationErrors.name && (
+                <p className="text-sm text-destructive">{validationErrors.name}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground font-montserrat">Email *</Label>
@@ -138,9 +169,15 @@ const QuoteModal = ({ open, onOpenChange }: QuoteModalProps) => {
                 required
                 value={formData.email}
                 onChange={handleInputChange}
-                className="bg-background/50 border-gold/30 focus:border-gold"
+                className={cn(
+                  "bg-background/50 border-gold/30 focus:border-gold",
+                  validationErrors.email && "border-destructive focus:border-destructive"
+                )}
                 placeholder="votre@email.com"
               />
+              {validationErrors.email && (
+                <p className="text-sm text-destructive">{validationErrors.email}</p>
+              )}
             </div>
           </div>
 
@@ -153,9 +190,15 @@ const QuoteModal = ({ open, onOpenChange }: QuoteModalProps) => {
                 type="tel"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="bg-background/50 border-gold/30 focus:border-gold"
+                className={cn(
+                  "bg-background/50 border-gold/30 focus:border-gold",
+                  validationErrors.phone && "border-destructive focus:border-destructive"
+                )}
                 placeholder="06 12 34 56 78"
               />
+              {validationErrors.phone && (
+                <p className="text-sm text-destructive">{validationErrors.phone}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="event_type" className="text-foreground font-montserrat">Type d'événement *</Label>
@@ -255,9 +298,15 @@ const QuoteModal = ({ open, onOpenChange }: QuoteModalProps) => {
               name="special_requests"
               value={formData.special_requests}
               onChange={handleInputChange}
-              className="bg-background/50 border-gold/30 focus:border-gold min-h-[100px]"
+              className={cn(
+                "bg-background/50 border-gold/30 focus:border-gold min-h-[100px]",
+                validationErrors.special_requests && "border-destructive focus:border-destructive"
+              )}
               placeholder="Équipements spécifiques, styles musicaux, éclairage, effets spéciaux..."
             />
+            {validationErrors.special_requests && (
+              <p className="text-sm text-destructive">{validationErrors.special_requests}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -268,9 +317,15 @@ const QuoteModal = ({ open, onOpenChange }: QuoteModalProps) => {
               required
               value={formData.message}
               onChange={handleInputChange}
-              className="bg-background/50 border-gold/30 focus:border-gold min-h-[120px]"
+              className={cn(
+                "bg-background/50 border-gold/30 focus:border-gold min-h-[120px]",
+                validationErrors.message && "border-destructive focus:border-destructive"
+              )}
               placeholder="Décrivez votre projet, l'ambiance souhaitée, vos attentes..."
             />
+            {validationErrors.message && (
+              <p className="text-sm text-destructive">{validationErrors.message}</p>
+            )}
           </div>
 
           <div className="flex gap-4 pt-4">

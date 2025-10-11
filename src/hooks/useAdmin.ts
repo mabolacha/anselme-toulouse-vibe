@@ -25,7 +25,9 @@ export const useAdmin = () => {
 
         setIsAdmin(!!data && !error);
       } catch (error) {
-        console.error('Error checking admin status:', error);
+        if (import.meta.env.DEV) {
+          console.error('Error checking admin status:', error);
+        }
         setIsAdmin(false);
       } finally {
         setLoading(false);

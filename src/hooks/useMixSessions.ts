@@ -36,8 +36,10 @@ export const useMixSessions = () => {
       setMixSessions((data as MixSession[]) || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur lors du chargement');
-      console.error('Error fetching mix sessions:', err);
-    } finally {
+      if (import.meta.env.DEV) {
+        console.error('Error fetching mix sessions:', err);
+      }
+    } finally{
       setLoading(false);
     }
   };

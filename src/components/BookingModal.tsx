@@ -87,6 +87,24 @@ const BookingModal = ({ open, onOpenChange }: BookingModalProps) => {
 
       if (error) throw error;
 
+      // Send notification emails
+      try {
+        const { error: emailError } = await supabase.functions.invoke('send-booking-notification', {
+          body: {
+            ...validatedData,
+            type: 'booking'
+          }
+        });
+
+        if (emailError) {
+          console.error('Email notification error:', emailError);
+          // Don't block the user flow if email fails
+        }
+      } catch (emailError) {
+        console.error('Failed to send email notification:', emailError);
+        // Continue anyway - the booking is saved
+      }
+
       toast({
         title: "Réservation envoyée !",
         description: "Votre demande de réservation a été envoyée. Nous vous recontacterons rapidement.",

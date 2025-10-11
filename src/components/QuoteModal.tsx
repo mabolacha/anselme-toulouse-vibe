@@ -93,6 +93,24 @@ const QuoteModal = ({ open, onOpenChange }: QuoteModalProps) => {
 
       if (error) throw error;
 
+      // Send notification emails
+      try {
+        const { error: emailError } = await supabase.functions.invoke('send-booking-notification', {
+          body: {
+            ...validatedData,
+            type: 'quote'
+          }
+        });
+
+        if (emailError) {
+          console.error('Email notification error:', emailError);
+          // Don't block the user flow if email fails
+        }
+      } catch (emailError) {
+        console.error('Failed to send email notification:', emailError);
+        // Continue anyway - the quote is saved
+      }
+
       toast({
         title: "Demande de devis envoyée !",
         description: "Votre demande de devis a été envoyée. Nous vous enverrons une proposition détaillée sous 48h.",

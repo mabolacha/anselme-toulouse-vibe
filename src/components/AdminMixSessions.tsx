@@ -1,25 +1,35 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { useToast } from '@/hooks/use-toast';
-import { useMixSessions } from '@/hooks/useMixSessions';
-import { parseEmbedUrl, isValidEmbedUrl } from '@/utils/embedUrlParser';
-import MixPlayerEmbed from '@/components/MixPlayerEmbed';
-import { Plus, Edit, Trash2, Eye, EyeOff, Loader2, Save, X } from 'lucide-react';
-import { mixSessionSchema } from '@/lib/validation';
-import { z } from 'zod';
-import { cn } from '@/lib/utils';
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  detectPlatform,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useMixSessions } from "@/hooks/useMixSessions";
+import { parseEmbedUrl, isValidEmbedUrl } from "@/utils/embedUrlParser";
+import MixPlayerEmbed from "@/components/MixPlayerEmbed";
+import { Plus, Edit, Trash2, Eye, EyeOff, Loader2, Save, X } from "lucide-react";
+import { mixSessionSchema } from "@/lib/validation";
+import { z } from "zod";
+import { cn } from "@/lib/utils";
 
 interface MixSessionForm {
   title: string;
   description: string;
-  platform: 'hearthis' | 'youtube' | 'mixcloud';
+  platform: "hearthis" | "youtube" | "mixcloud";
   embedUrl: string;
   displayOrder: number;
   isActive: boolean;
@@ -28,62 +38,71 @@ interface MixSessionForm {
 const AdminMixSessions = () => {
   const { mixSessions, loading, createMixSession, updateMixSession, deleteMixSession, refetch } = useMixSessions();
   const { toast } = useToast();
-  
+
   // Fetch all sessions including inactive ones for admin
   React.useEffect(() => {
     refetch(true);
   }, []);
-  
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  
+
   const [form, setForm] = useState<MixSessionForm>({
-    title: '',
-    description: '',
-    platform: 'hearthis',
-    embedUrl: '',
+    title: "",
+    description: "",
+    platform: "hearthis",
+    embedUrl: "",
     displayOrder: 0,
-    isActive: true
+    isActive: true,
   });
 
-  const [rawInput, setRawInput] = useState('');
+  const [rawInput, setRawInput] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   // Handle raw input change and parse embed URL
   const handleRawInputChange = (value: string) => {
     setRawInput(value);
-    
+
     if (!value.trim()) {
       setPreviewUrl(null);
-      setForm(prev => ({ ...prev, embedUrl: '' }));
+      setForm((prev) => ({ ...prev, embedUrl: "", platform: "hearthis" }));
       return;
     }
 
-    const parsed = parseEmbedUrl(value, form.platform);
-    
-    if (parsed && isValidEmbedUrl(parsed, form.platform)) {
+    // Détection automatique de la plateforme
+    const detectedPlatform = detectPlatform(value);
+
+    if (!detectedPlatform) {
+      setPreviewUrl(null);
+      setForm((prev) => ({ ...prev, embedUrl: "" }));
+      return;
+    }
+
+    const parsed = parseEmbedUrl(value, detectedPlatform);
+
+    if (parsed && isValidEmbedUrl(parsed, detectedPlatform)) {
       setPreviewUrl(parsed);
-      setForm(prev => ({ ...prev, embedUrl: parsed }));
+      setForm((prev) => ({ ...prev, embedUrl: parsed, platform: detectedPlatform }));
     } else {
       setPreviewUrl(null);
-      setForm(prev => ({ ...prev, embedUrl: '' }));
+      setForm((prev) => ({ ...prev, embedUrl: "" }));
     }
   };
 
   // Reset form
   const resetForm = () => {
     setForm({
-      title: '',
-      description: '',
-      platform: 'hearthis',
-      embedUrl: '',
+      title: "",
+      description: "",
+      platform: "hearthis",
+      embedUrl: "",
       displayOrder: mixSessions.length,
-      isActive: true
+      isActive: true,
     });
-    setRawInput('');
+    setRawInput("");
     setPreviewUrl(null);
     setEditingId(null);
     setIsFormOpen(false);
@@ -91,16 +110,16 @@ const AdminMixSessions = () => {
 
   // Open form for editing
   const handleEdit = (id: string) => {
-    const session = mixSessions.find(s => s.id === id);
+    const session = mixSessions.find((s) => s.id === id);
     if (!session) return;
 
     setForm({
       title: session.title,
-      description: session.description || '',
-      platform: session.platform as 'hearthis' | 'youtube' | 'mixcloud',
+      description: session.description || "",
+      platform: session.platform as "hearthis" | "youtube" | "mixcloud",
       embedUrl: session.embed_url,
       displayOrder: session.display_order,
-      isActive: session.is_active
+      isActive: session.is_active,
     });
     setRawInput(session.embed_url);
     setPreviewUrl(session.embed_url);
@@ -112,12 +131,12 @@ const AdminMixSessions = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationErrors({});
-    
+
     if (!form.embedUrl || !isValidEmbedUrl(form.embedUrl, form.platform)) {
       toast({
         title: "Erreur",
         description: "L'URL d'embed n'est pas valide pour cette plateforme",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -132,7 +151,7 @@ const AdminMixSessions = () => {
         platform: form.platform,
         embedUrl: form.embedUrl,
         displayOrder: form.displayOrder,
-        isActive: form.isActive
+        isActive: form.isActive,
       });
 
       if (editingId) {
@@ -142,14 +161,14 @@ const AdminMixSessions = () => {
           platform: validatedData.platform,
           embed_url: validatedData.embedUrl,
           display_order: validatedData.displayOrder,
-          is_active: validatedData.isActive
+          is_active: validatedData.isActive,
         });
 
         if (error) throw error;
 
         toast({
           title: "Succès",
-          description: "Mix session mise à jour avec succès"
+          description: "Mix session mise à jour avec succès",
         });
       } else {
         const { error } = await createMixSession({
@@ -158,14 +177,14 @@ const AdminMixSessions = () => {
           platform: validatedData.platform,
           embed_url: validatedData.embedUrl,
           display_order: validatedData.displayOrder,
-          is_active: validatedData.isActive
+          is_active: validatedData.isActive,
         });
 
         if (error) throw error;
 
         toast({
           title: "Succès",
-          description: "Mix session créée avec succès"
+          description: "Mix session créée avec succès",
         });
       }
 
@@ -174,7 +193,7 @@ const AdminMixSessions = () => {
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         const errors: Record<string, string> = {};
-        error.errors.forEach(err => {
+        error.errors.forEach((err) => {
           if (err.path[0]) {
             errors[err.path[0].toString()] = err.message;
           }
@@ -187,12 +206,12 @@ const AdminMixSessions = () => {
         });
       } else {
         if (import.meta.env.DEV) {
-          console.error('Error message:', error.message);
+          console.error("Error message:", error.message);
         }
         toast({
           title: "Erreur",
           description: error.message || "Une erreur est survenue",
-          variant: "destructive"
+          variant: "destructive",
         });
       }
     } finally {
@@ -209,15 +228,15 @@ const AdminMixSessions = () => {
 
       toast({
         title: "Succès",
-        description: "Mix session supprimée"
+        description: "Mix session supprimée",
       });
-      
+
       refetch(true);
     } catch (error: any) {
       toast({
         title: "Erreur",
         description: error.message || "Erreur lors de la suppression",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setSubmitting(false);
@@ -233,15 +252,15 @@ const AdminMixSessions = () => {
 
       toast({
         title: "Succès",
-        description: currentStatus ? "Mix session désactivée" : "Mix session activée"
+        description: currentStatus ? "Mix session désactivée" : "Mix session activée",
       });
-      
+
       refetch(true);
     } catch (error: any) {
       toast({
         title: "Erreur",
         description: error.message,
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -267,7 +286,7 @@ const AdminMixSessions = () => {
         {!isFormOpen && (
           <Button
             onClick={() => {
-              setForm(prev => ({ ...prev, displayOrder: mixSessions.length }));
+              setForm((prev) => ({ ...prev, displayOrder: mixSessions.length }));
               setIsFormOpen(true);
             }}
             className="bg-gold hover:bg-gold-muted text-deep-black font-montserrat font-bold"
@@ -283,7 +302,7 @@ const AdminMixSessions = () => {
         <Card className="border-gold/20 bg-card/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-gold font-montserrat">
-              {editingId ? 'Modifier la session' : 'Nouvelle session'}
+              {editingId ? "Modifier la session" : "Nouvelle session"}
             </CardTitle>
             <CardDescription className="font-montserrat">
               Collez le code iframe ou l'URL de la plateforme
@@ -295,11 +314,13 @@ const AdminMixSessions = () => {
                 {/* Left Column */}
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="title" className="font-montserrat">Titre *</Label>
+                    <Label htmlFor="title" className="font-montserrat">
+                      Titre *
+                    </Label>
                     <Input
                       id="title"
                       value={form.title}
-                      onChange={(e) => setForm(prev => ({ ...prev, title: e.target.value }))}
+                      onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
                       placeholder="Open Format Mix vol 04"
                       className={cn("font-montserrat", validationErrors.title && "border-destructive")}
                       required
@@ -310,13 +331,18 @@ const AdminMixSessions = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="description" className="font-montserrat">Description</Label>
+                    <Label htmlFor="description" className="font-montserrat">
+                      Description
+                    </Label>
                     <Textarea
                       id="description"
                       value={form.description}
-                      onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
+                      onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
                       placeholder="Description du mix..."
-                      className={cn("font-montserrat min-h-[80px]", validationErrors.description && "border-destructive")}
+                      className={cn(
+                        "font-montserrat min-h-[80px]",
+                        validationErrors.description && "border-destructive",
+                      )}
                     />
                     {validationErrors.description && (
                       <p className="text-sm text-destructive mt-1">{validationErrors.description}</p>
@@ -324,11 +350,13 @@ const AdminMixSessions = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="platform" className="font-montserrat">Plateforme *</Label>
+                    <Label htmlFor="platform" className="font-montserrat">
+                      Plateforme *
+                    </Label>
                     <Select
                       value={form.platform}
-                      onValueChange={(value: 'hearthis' | 'youtube' | 'mixcloud') => {
-                        setForm(prev => ({ ...prev, platform: value }));
+                      onValueChange={(value: "hearthis" | "youtube" | "mixcloud") => {
+                        setForm((prev) => ({ ...prev, platform: value }));
                         handleRawInputChange(rawInput); // Re-parse with new platform
                       }}
                     >
@@ -352,16 +380,17 @@ const AdminMixSessions = () => {
                       value={rawInput}
                       onChange={(e) => handleRawInputChange(e.target.value)}
                       placeholder={`<iframe src="https://app.hearthis.at/embed/..."></iframe>`}
-                      className={cn("font-montserrat font-mono text-xs min-h-[120px]", validationErrors.embedUrl && "border-destructive")}
+                      className={cn(
+                        "font-montserrat font-mono text-xs min-h-[120px]",
+                        validationErrors.embedUrl && "border-destructive",
+                      )}
                       required
                     />
                     {validationErrors.embedUrl && (
                       <p className="text-sm text-destructive mt-1">{validationErrors.embedUrl}</p>
                     )}
                     {!validationErrors.embedUrl && previewUrl && (
-                      <p className="text-xs text-green-500 font-montserrat mt-1">
-                        ✓ URL d'embed valide détectée
-                      </p>
+                      <p className="text-xs text-green-500 font-montserrat mt-1">✓ URL d'embed valide détectée</p>
                     )}
                     {!validationErrors.embedUrl && rawInput && !previewUrl && (
                       <p className="text-xs text-destructive font-montserrat mt-1">
@@ -372,22 +401,26 @@ const AdminMixSessions = () => {
 
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1">
-                      <Label htmlFor="displayOrder" className="font-montserrat">Ordre d'affichage</Label>
+                      <Label htmlFor="displayOrder" className="font-montserrat">
+                        Ordre d'affichage
+                      </Label>
                       <Input
                         id="displayOrder"
                         type="number"
                         value={form.displayOrder}
-                        onChange={(e) => setForm(prev => ({ ...prev, displayOrder: parseInt(e.target.value) }))}
+                        onChange={(e) => setForm((prev) => ({ ...prev, displayOrder: parseInt(e.target.value) }))}
                         className="font-montserrat"
                         min={0}
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <Label htmlFor="isActive" className="font-montserrat">Active</Label>
+                      <Label htmlFor="isActive" className="font-montserrat">
+                        Active
+                      </Label>
                       <Switch
                         id="isActive"
                         checked={form.isActive}
-                        onCheckedChange={(checked) => setForm(prev => ({ ...prev, isActive: checked }))}
+                        onCheckedChange={(checked) => setForm((prev) => ({ ...prev, isActive: checked }))}
                       />
                     </div>
                   </div>
@@ -398,11 +431,7 @@ const AdminMixSessions = () => {
                   <Label className="font-montserrat mb-2 block">Aperçu</Label>
                   <div className="border border-gold/20 rounded-lg p-4 bg-background/50">
                     {previewUrl ? (
-                      <MixPlayerEmbed
-                        platform={form.platform}
-                        embedUrl={previewUrl}
-                        title={form.title || 'Aperçu'}
-                      />
+                      <MixPlayerEmbed platform={form.platform} embedUrl={previewUrl} title={form.title || "Aperçu"} />
                     ) : (
                       <div className="aspect-video flex items-center justify-center text-muted-foreground font-montserrat">
                         Aucun aperçu disponible
@@ -419,12 +448,8 @@ const AdminMixSessions = () => {
                   disabled={submitting || !previewUrl}
                   className="bg-gold hover:bg-gold-muted text-deep-black font-montserrat font-bold"
                 >
-                  {submitting ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  ) : (
-                    <Save className="h-4 w-4 mr-2" />
-                  )}
-                  {editingId ? 'Mettre à jour' : 'Créer'}
+                  {submitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+                  {editingId ? "Mettre à jour" : "Créer"}
                 </Button>
                 <Button
                   type="button"
@@ -447,7 +472,7 @@ const AdminMixSessions = () => {
         <h3 className="text-xl font-bold font-montserrat text-foreground">
           Sessions existantes ({mixSessions.length})
         </h3>
-        
+
         {mixSessions.length === 0 ? (
           <Card className="border-gold/20 bg-card/80 backdrop-blur-sm">
             <CardContent className="py-12 text-center">
@@ -468,7 +493,7 @@ const AdminMixSessions = () => {
                     {/* Preview */}
                     <div className="md:w-1/2">
                       <MixPlayerEmbed
-                        platform={session.platform as 'hearthis' | 'youtube' | 'mixcloud'}
+                        platform={session.platform as "hearthis" | "youtube" | "mixcloud"}
                         embedUrl={session.embed_url}
                         title={session.title}
                       />
@@ -478,9 +503,7 @@ const AdminMixSessions = () => {
                     <div className="md:w-1/2 flex flex-col justify-between">
                       <div>
                         <div className="flex items-start justify-between mb-2">
-                          <h4 className="text-lg font-bold font-montserrat text-gold">
-                            {session.title}
-                          </h4>
+                          <h4 className="text-lg font-bold font-montserrat text-gold">{session.title}</h4>
                           <div className="flex items-center gap-2">
                             {session.is_active ? (
                               <span className="flex items-center gap-1 text-xs text-green-500 font-montserrat">
@@ -493,13 +516,11 @@ const AdminMixSessions = () => {
                             )}
                           </div>
                         </div>
-                        
+
                         {session.description && (
-                          <p className="text-sm text-muted-foreground font-montserrat mb-3">
-                            {session.description}
-                          </p>
+                          <p className="text-sm text-muted-foreground font-montserrat mb-3">{session.description}</p>
                         )}
-                        
+
                         <div className="flex items-center gap-4 text-xs text-muted-foreground font-montserrat">
                           <span className="capitalize">{session.platform}</span>
                           <span>Ordre: {session.display_order}</span>
@@ -523,9 +544,13 @@ const AdminMixSessions = () => {
                           className="font-montserrat"
                         >
                           {session.is_active ? (
-                            <><EyeOff className="h-3 w-3 mr-1" /> Désactiver</>
+                            <>
+                              <EyeOff className="h-3 w-3 mr-1" /> Désactiver
+                            </>
                           ) : (
-                            <><Eye className="h-3 w-3 mr-1" /> Activer</>
+                            <>
+                              <Eye className="h-3 w-3 mr-1" /> Activer
+                            </>
                           )}
                         </Button>
                         <Button

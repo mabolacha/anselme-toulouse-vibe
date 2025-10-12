@@ -15,11 +15,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  detectPlatform,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useMixSessions } from "@/hooks/useMixSessions";
-import { parseEmbedUrl, isValidEmbedUrl } from "@/utils/embedUrlParser";
+import { parseEmbedUrl, isValidEmbedUrl, detectPlatform } from "@/utils/embedUrlParser";
 import MixPlayerEmbed from "@/components/MixPlayerEmbed";
 import { Plus, Edit, Trash2, Eye, EyeOff, Loader2, Save, X } from "lucide-react";
 import { mixSessionSchema } from "@/lib/validation";

@@ -3,14 +3,11 @@
  * Supports Hearthis.at, YouTube, and Mixcloud platforms
  */
 
-export const parseEmbedUrl = (
-  input: string,
-  platform: 'hearthis' | 'youtube' | 'mixcloud'
-): string | null => {
+export const parseEmbedUrl = (input: string, platform: "hearthis" | "youtube" | "mixcloud"): string | null => {
   const trimmedInput = input.trim();
 
   // First, check if input is an iframe and extract the src
-  if (trimmedInput.includes('<iframe')) {
+  if (trimmedInput.includes("<iframe")) {
     const srcMatch = trimmedInput.match(/src=["']([^"']+)["']/);
     if (srcMatch && srcMatch[1]) {
       return srcMatch[1];
@@ -20,10 +17,10 @@ export const parseEmbedUrl = (
 
   // Platform-specific URL handling
   switch (platform) {
-    case 'hearthis':
+    case "hearthis":
       // Direct embed URL: https://app.hearthis.at/embed/12807924/...
-      if (trimmedInput.includes('app.hearthis.at/embed/')) {
-        return trimmedInput.split('?')[0]; // Remove query params for consistency
+      if (trimmedInput.includes("app.hearthis.at/embed/")) {
+        return trimmedInput.split("?")[0]; // Remove query params for consistency
       }
       // Public page URL: https://hearthis.at/username/track-name/
       const hearthisPublicMatch = trimmedInput.match(/hearthis\.at\/([^\/]+)\/([^\/\?]+)/);
@@ -34,24 +31,22 @@ export const parseEmbedUrl = (
       }
       return null;
 
-    case 'youtube':
+    case "youtube":
       // Direct embed URL
-      if (trimmedInput.includes('youtube.com/embed/')) {
-        return trimmedInput.split('?')[0];
+      if (trimmedInput.includes("youtube.com/embed/")) {
+        return trimmedInput.split("?")[0];
       }
       // Public URLs: youtube.com/watch?v=VIDEO_ID or youtu.be/VIDEO_ID
-      const youtubePublicMatch = trimmedInput.match(
-        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/
-      );
+      const youtubePublicMatch = trimmedInput.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
       if (youtubePublicMatch && youtubePublicMatch[1]) {
         return `https://www.youtube.com/embed/${youtubePublicMatch[1]}`;
       }
       return null;
 
-    case 'mixcloud':
+    case "mixcloud":
       // Direct widget URL
-      if (trimmedInput.includes('mixcloud.com/widget/iframe')) {
-        return trimmedInput.split('&')[0]; // Keep basic URL
+      if (trimmedInput.includes("mixcloud.com/widget/iframe")) {
+        return trimmedInput.split("&")[0]; // Keep basic URL
       }
       // Public URL: mixcloud.com/artist/mix-name/
       const mixcloudPublicMatch = trimmedInput.match(/mixcloud\.com\/([^\/]+\/[^\/\?]+)/);
@@ -68,15 +63,39 @@ export const parseEmbedUrl = (
 /**
  * Validate if the embed URL is valid for the given platform
  */
-export const isValidEmbedUrl = (url: string, platform: 'hearthis' | 'youtube' | 'mixcloud'): boolean => {
+export const isValidEmbedUrl = (url: string, platform: "hearthis" | "youtube" | "mixcloud"): boolean => {
   switch (platform) {
-    case 'hearthis':
-      return url.includes('app.hearthis.at/embed/');
-    case 'youtube':
-      return url.includes('youtube.com/embed/');
-    case 'mixcloud':
-      return url.includes('mixcloud.com/widget/iframe');
+    case "hearthis":
+      return url.includes("app.hearthis.at/embed/");
+    case "youtube":
+      return url.includes("youtube.com/embed/");
+    case "mixcloud":
+      return url.includes("mixcloud.com/widget/iframe");
     default:
       return false;
   }
+};
+
+/**
+ * Detect platform automatically from URL or iframe code
+ */
+export const detectPlatform = (input: string): "hearthis" | "youtube" | "mixcloud" | null => {
+  const trimmedInput = input.trim().toLowerCase();
+
+  // Hearthis detection
+  if (trimmedInput.includes("hearthis.at")) {
+    return "hearthis";
+  }
+
+  // YouTube detection
+  if (trimmedInput.includes("youtube.com") || trimmedInput.includes("youtu.be")) {
+    return "youtube";
+  }
+
+  // Mixcloud detection
+  if (trimmedInput.includes("mixcloud.com")) {
+    return "mixcloud";
+  }
+
+  return null;
 };

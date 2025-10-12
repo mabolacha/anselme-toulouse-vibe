@@ -349,28 +349,6 @@ const AdminMixSessions = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="platform" className="font-montserrat">
-                      Plateforme *
-                    </Label>
-                    <Select
-                      value={form.platform}
-                      onValueChange={(value: "hearthis" | "youtube" | "mixcloud") => {
-                        setForm((prev) => ({ ...prev, platform: value }));
-                        handleRawInputChange(rawInput); // Re-parse with new platform
-                      }}
-                    >
-                      <SelectTrigger className="font-montserrat">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="hearthis">Hearthis.at</SelectItem>
-                        <SelectItem value="youtube">YouTube</SelectItem>
-                        <SelectItem value="mixcloud">Mixcloud</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
                     <Label htmlFor="embedInput" className="font-montserrat">
                       Code iframe ou URL *
                     </Label>
@@ -389,7 +367,14 @@ const AdminMixSessions = () => {
                       <p className="text-sm text-destructive mt-1">{validationErrors.embedUrl}</p>
                     )}
                     {!validationErrors.embedUrl && previewUrl && (
-                      <p className="text-xs text-green-500 font-montserrat mt-1">✓ URL d'embed valide détectée</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <p className="text-xs text-green-500 font-montserrat">✓ URL d'embed valide détectée</p>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-montserrat font-semibold bg-gold/20 text-gold border border-gold/30">
+                          {form.platform === "hearthis" && "Hearthis.at"}
+                          {form.platform === "youtube" && "YouTube"}
+                          {form.platform === "mixcloud" && "Mixcloud"}
+                        </span>
+                      </div>
                     )}
                     {!validationErrors.embedUrl && rawInput && !previewUrl && (
                       <p className="text-xs text-destructive font-montserrat mt-1">

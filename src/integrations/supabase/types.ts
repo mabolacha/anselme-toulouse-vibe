@@ -148,58 +148,106 @@ export type Database = {
       }
       quotes: {
         Row: {
+          balance_amount: number | null
+          base_package_with_equipment: number | null
+          base_package_without_equipment: number | null
           budget_range: string | null
           created_at: string
+          custom_playlist_included: boolean | null
+          deposit_amount: number | null
+          deposit_percentage: number | null
+          dj_animation_included: boolean | null
           duration_hours: number | null
           email: string
+          equipment_included: boolean | null
           event_date: string | null
           event_type: string
+          extra_options: Json | null
           guest_count: number | null
           id: string
           message: string | null
           name: string
+          payment_terms: string | null
           phone: string | null
           quote_amount: number | null
+          quote_generated_at: string | null
+          quote_notes: string | null
+          quote_sent_at: string | null
           special_requests: string | null
           status: string | null
+          technical_installation_included: boolean | null
+          travel_fees: number | null
           updated_at: string
           venue: string | null
+          venue_distance_km: number | null
         }
         Insert: {
+          balance_amount?: number | null
+          base_package_with_equipment?: number | null
+          base_package_without_equipment?: number | null
           budget_range?: string | null
           created_at?: string
+          custom_playlist_included?: boolean | null
+          deposit_amount?: number | null
+          deposit_percentage?: number | null
+          dj_animation_included?: boolean | null
           duration_hours?: number | null
           email: string
+          equipment_included?: boolean | null
           event_date?: string | null
           event_type: string
+          extra_options?: Json | null
           guest_count?: number | null
           id?: string
           message?: string | null
           name: string
+          payment_terms?: string | null
           phone?: string | null
           quote_amount?: number | null
+          quote_generated_at?: string | null
+          quote_notes?: string | null
+          quote_sent_at?: string | null
           special_requests?: string | null
           status?: string | null
+          technical_installation_included?: boolean | null
+          travel_fees?: number | null
           updated_at?: string
           venue?: string | null
+          venue_distance_km?: number | null
         }
         Update: {
+          balance_amount?: number | null
+          base_package_with_equipment?: number | null
+          base_package_without_equipment?: number | null
           budget_range?: string | null
           created_at?: string
+          custom_playlist_included?: boolean | null
+          deposit_amount?: number | null
+          deposit_percentage?: number | null
+          dj_animation_included?: boolean | null
           duration_hours?: number | null
           email?: string
+          equipment_included?: boolean | null
           event_date?: string | null
           event_type?: string
+          extra_options?: Json | null
           guest_count?: number | null
           id?: string
           message?: string | null
           name?: string
+          payment_terms?: string | null
           phone?: string | null
           quote_amount?: number | null
+          quote_generated_at?: string | null
+          quote_notes?: string | null
+          quote_sent_at?: string | null
           special_requests?: string | null
           status?: string | null
+          technical_installation_included?: boolean | null
+          travel_fees?: number | null
           updated_at?: string
           venue?: string | null
+          venue_distance_km?: number | null
         }
         Relationships: []
       }

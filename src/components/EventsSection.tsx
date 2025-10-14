@@ -1,57 +1,68 @@
-import { Calendar, MapPin, Clock, ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { useState } from 'react';
-import BookingModal from '@/components/BookingModal';
-import QuoteModal from '@/components/QuoteModal';
+import { Calendar, MapPin, Clock, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useState } from "react";
+import BookingModal from "@/components/BookingModal";
+import QuoteModal from "@/components/QuoteModal";
 
 const EventsSection = () => {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
-  
+
   const upcomingEvents = [
     {
       id: 1,
-      title: 'Soirée spéciale jeunes - Marignac Lasclares',
-      venue: 'Salles des fêtes',
-      date: '2025-05-31',
-      time: '23:00',
-      location: 'Marignac Lasclares, 31',
-      description: 'Organisée par les Comité des fêtes de la Mairie',
-      price: '15€',
-      status: 'confirmed'
+      title: "Soirée spéciale jeunes - Marignac Lasclares",
+      venue: "Salles des fêtes",
+      date: "2025-05-31",
+      time: "23:00",
+      location: "Marignac Lasclares, 31",
+      description: "Organisée par les Comité des fêtes de la Mairie",
+      price: "15€",
+      status: "confirmed",
     },
     {
       id: 2,
-      title: 'Fête de la Musique - Le Fousseret',
-      venue: 'Place de la Mairie',
-      date: '2025-06-21',
-      time: '23:00',
-      location: 'Le Fousseret, 31',
-      description: 'Festival outdoor avec DJ sets en plein air',
-      price: 'Gratuit',
-      status: 'confirmed'
+      title: "Fête de la Musique - Le Fousseret",
+      venue: "Place de la Mairie",
+      date: "2025-06-21",
+      time: "23:00",
+      location: "Le Fousseret, 31",
+      description: "Festival outdoor avec DJ sets en plein air",
+      price: "Gratuit",
+      status: "confirmed",
     },
     {
       id: 3,
-      title: 'Soirée Afro-Caribéénne',
-      venue: 'BBT Cornebarrieu',
-      date: '2025-09-13',
-      time: '22:30',
-      location: '6, rue E. Dewotine, Cornebarrieu',
-      description: 'Animation avec DJ Riina',
-      price: '12€ + Conso - en pré-vente sur Bizouk',
-      status: 'confirmed'
-    }
+      title: "Soirée Afro-Caribéénne",
+      venue: "BBT Cornebarrieu",
+      date: "2025-09-13",
+      time: "22:30",
+      location: "6, rue E. Dewotine, Cornebarrieu",
+      description: "Animation avec DJ Riina",
+      price: "12€ + Conso - en pré-vente sur Bizouk",
+      status: "confirmed",
+    },
+    {
+      id: 4,
+      title: "Soirée Afro-Caribéénne",
+      venue: "BBT Cornebarrieu",
+      date: "2025-11-06",
+      time: "22:30",
+      location: "6, rue E. Dewotine, Cornebarrieu",
+      description: "Animation avec DJ Riina",
+      price: "12€ + Conso - en pré-vente sur Bizouk",
+      status: "confirmed",
+    },
   ];
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return date.toLocaleDateString("fr-FR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -71,12 +82,12 @@ const EventsSection = () => {
             ÉVÉNEMENTS À VENIR
           </h2>
           <p className="text-xl text-muted-foreground font-montserrat tracking-wide max-w-3xl mx-auto">
-            Découvrez mes prochaines performances à Toulouse et dans la région. 
-            Réservez vos places pour une expérience musicale inoubliable.
+            Découvrez mes prochaines performances à Toulouse et dans la région. Réservez vos places pour une expérience
+            musicale inoubliable.
           </p>
           <div className="mt-6">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="border-gold text-gold hover:bg-gold hover:text-deep-black font-montserrat tracking-wide"
             >
               <ExternalLink className="h-4 w-4 mr-2" />
@@ -88,20 +99,23 @@ const EventsSection = () => {
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {upcomingEvents.map((event) => (
-            <Card 
-              key={event.id} 
+            <Card
+              key={event.id}
               className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 group hover:shadow-gold overflow-hidden"
             >
               <div className="p-6">
                 {/* Event Status Badge */}
                 <div className="flex justify-between items-start mb-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold font-montserrat tracking-wide ${
-                    event.status === 'confirmed' ? 'bg-gold text-deep-black' :
-                    event.status === 'private' ? 'bg-toulouse-brick text-foreground' :
-                    'bg-muted text-muted-foreground'
-                  }`}>
-                    {event.status === 'confirmed' ? 'CONFIRMÉ' :
-                     event.status === 'private' ? 'PRIVÉ' : 'EN ATTENTE'}
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-bold font-montserrat tracking-wide ${
+                      event.status === "confirmed"
+                        ? "bg-gold text-deep-black"
+                        : event.status === "private"
+                          ? "bg-toulouse-brick text-foreground"
+                          : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {event.status === "confirmed" ? "CONFIRMÉ" : event.status === "private" ? "PRIVÉ" : "EN ATTENTE"}
                   </span>
                   <span className="text-gold font-bold font-montserrat">{event.price}</span>
                 </div>
@@ -131,17 +145,15 @@ const EventsSection = () => {
                 </div>
 
                 {/* Description */}
-                <p className="text-muted-foreground text-sm font-montserrat mb-6 line-clamp-2">
-                  {event.description}
-                </p>
+                <p className="text-muted-foreground text-sm font-montserrat mb-6 line-clamp-2">{event.description}</p>
 
                 {/* Action Button */}
-                <Button 
+                <Button
                   className="w-full bg-gradient-gold hover:bg-gold-muted text-deep-black font-bold font-montserrat tracking-wide transition-all duration-300"
-                  disabled={event.status === 'private'}
-                  onClick={event.status !== 'private' ? () => setIsBookingModalOpen(true) : undefined}
+                  disabled={event.status === "private"}
+                  onClick={event.status !== "private" ? () => setIsBookingModalOpen(true) : undefined}
                 >
-                  {event.status === 'private' ? 'ÉVÉNEMENT PRIVÉ' : 'RÉSERVER'}
+                  {event.status === "private" ? "ÉVÉNEMENT PRIVÉ" : "RÉSERVER"}
                 </Button>
               </div>
             </Card>
@@ -150,14 +162,12 @@ const EventsSection = () => {
 
         {/* Contact for Booking */}
         <div className="text-center mt-16 p-8 bg-warm-black/50 backdrop-blur-sm border border-gold/20 rounded-lg">
-          <h3 className="text-2xl font-bold font-montserrat text-gold mb-4">
-            Besoin d'un DJ pour votre événement ?
-          </h3>
+          <h3 className="text-2xl font-bold font-montserrat text-gold mb-4">Besoin d'un DJ pour votre événement ?</h3>
           <p className="text-muted-foreground font-montserrat mb-6 max-w-2xl mx-auto">
-            Soirées privées, mariages, événements corporatifs, clubs... 
-            Contactez-moi pour un devis personnalisé et une prestation sur mesure.
+            Soirées privées, mariages, événements corporatifs, clubs... Contactez-moi pour un devis personnalisé et une
+            prestation sur mesure.
           </p>
-          <Button 
+          <Button
             size="lg"
             className="bg-gradient-gold hover:bg-gold-muted text-deep-black font-bold px-8 py-4 font-montserrat tracking-wide shadow-gold hover:shadow-glow transition-all duration-300"
             onClick={() => setIsQuoteModalOpen(true)}
@@ -168,14 +178,8 @@ const EventsSection = () => {
       </div>
 
       {/* Modals */}
-      <BookingModal 
-        open={isBookingModalOpen} 
-        onOpenChange={setIsBookingModalOpen} 
-      />
-      <QuoteModal 
-        open={isQuoteModalOpen} 
-        onOpenChange={setIsQuoteModalOpen} 
-      />
+      <BookingModal open={isBookingModalOpen} onOpenChange={setIsBookingModalOpen} />
+      <QuoteModal open={isQuoteModalOpen} onOpenChange={setIsQuoteModalOpen} />
     </section>
   );
 };

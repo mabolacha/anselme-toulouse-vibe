@@ -45,7 +45,7 @@ const HeroSection = () => {
               onClick={() => document.getElementById("music")?.scrollIntoView({ behavior: "smooth" })}
             >
               <Play className="h-5 w-5 mr-2" />
-              ÉCOUTER MAINTENANT
+              MUSIQUE
             </Button>
             <Button
               variant="outline"

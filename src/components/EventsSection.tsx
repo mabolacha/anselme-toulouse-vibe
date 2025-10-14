@@ -47,7 +47,7 @@ const EventsSection = () => {
       id: 4,
       title: "Soirée Afro-Caribéénne",
       venue: "BBT Cornebarrieu",
-      date: "2025-11-06",
+      date: "2025-12-06",
       time: "22:30",
       location: "6, rue E. Dewotine, Cornebarrieu",
       description: "Animation avec DJ Riina",

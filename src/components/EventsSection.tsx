@@ -50,7 +50,7 @@ const EventsSection = () => {
       date: "2025-12-06",
       time: "22:30",
       location: "6, rue E. Dewotine, Cornebarrieu",
-      description: "Animation avec DJ Riina",
+      description: "Cours de danse Kizomba avant la soirée",
       price: "12€ + Conso - en pré-vente sur Bizouk",
       status: "confirmed",
     },
@@ -73,10 +73,10 @@ const EventsSection = () => {
     return eventDate < today;
   };
 
-  const futureEvents = upcomingEvents.filter(event => !isEventPast(event.date));
-  const pastEvents = upcomingEvents.filter(event => isEventPast(event.date));
+  const futureEvents = upcomingEvents.filter((event) => !isEventPast(event.date));
+  const pastEvents = upcomingEvents.filter((event) => isEventPast(event.date));
 
-  const EventCard = ({ event, isPast }: { event: typeof upcomingEvents[0]; isPast: boolean }) => (
+  const EventCard = ({ event, isPast }: { event: (typeof upcomingEvents)[0]; isPast: boolean }) => (
     <Card
       key={event.id}
       className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 group hover:shadow-gold overflow-hidden"
@@ -155,8 +155,8 @@ const EventsSection = () => {
                 ÉVÉNEMENTS À VENIR
               </h2>
               <p className="text-xl text-muted-foreground font-montserrat tracking-wide max-w-3xl mx-auto">
-                Découvrez mes prochaines performances à Toulouse et dans la région. Réservez vos places pour une expérience
-                musicale inoubliable.
+                Découvrez mes prochaines performances à Toulouse et dans la région. Réservez vos places pour une
+                expérience musicale inoubliable.
               </p>
               <div className="mt-6">
                 <Button

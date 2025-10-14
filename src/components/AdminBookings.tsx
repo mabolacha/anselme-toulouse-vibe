@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Calendar, Mail, Phone, User, MapPin, Users, Euro, MessageSquare, Clock, CheckCircle, XCircle, Search, Copy, Send } from 'lucide-react';
+import { Calendar, Mail, Phone, User, MapPin, Users, Euro, MessageSquare, Clock, CheckCircle, XCircle, Search, Copy, Send, Edit, FileText } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import AdminStats from '@/components/AdminStats';
+import { QuoteEditModal } from '@/components/QuoteEditModal';
 
 interface Booking {
   id: string;
@@ -40,6 +41,21 @@ interface Quote {
   quote_amount: number | null;
   status: string;
   created_at: string;
+  equipment_included: boolean | null;
+  base_package_with_equipment: number | null;
+  base_package_without_equipment: number | null;
+  venue_distance_km: number | null;
+  travel_fees: number | null;
+  dj_animation_included: boolean | null;
+  technical_installation_included: boolean | null;
+  custom_playlist_included: boolean | null;
+  extra_options: any;
+  deposit_percentage: number | null;
+  deposit_amount: number | null;
+  balance_amount: number | null;
+  payment_terms: string | null;
+  quote_notes: string | null;
+  message: string | null;
 }
 
 const AdminBookings = () => {
@@ -48,6 +64,8 @@ const AdminBookings = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
+  const [isQuoteEditModalOpen, setIsQuoteEditModalOpen] = useState(false);
   const { toast } = useToast();
 
   const fetchData = async () => {
@@ -422,13 +440,39 @@ const AdminBookings = () => {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {quote.quote_amount ? (
+                          <Badge variant="default" className="bg-gold/20 text-gold border-gold">
+                            <FileText className="h-3 w-3 mr-1" />
+                            Devis préparé: {quote.quote_amount}€
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="bg-destructive/20 text-destructive border-destructive/50">
+                            <FileText className="h-3 w-3 mr-1" />
+                            Devis non préparé
+                          </Badge>
+                        )}
                         {getStatusBadge(quote.status)}
                         <span className="text-xs text-muted-foreground">
                           {formatDate(quote.created_at)}
                         </span>
                       </div>
                     </div>
+
+                    {quote.quote_amount && (
+                      <div className="mb-4 p-4 bg-gold/5 border border-gold/20 rounded-lg">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Euro className="h-5 w-5 text-gold" />
+                          <span className="text-lg font-bold text-gold">MONTANT TOTAL: {quote.quote_amount}€</span>
+                        </div>
+                        {quote.deposit_amount && quote.balance_amount && (
+                          <div className="ml-7 space-y-1 text-sm text-muted-foreground">
+                            <div>└─ Acompte ({quote.deposit_percentage || 30}%): {quote.deposit_amount}€</div>
+                            <div>└─ Solde: {quote.balance_amount}€</div>
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                       <div className="flex items-center gap-2 text-sm">
@@ -510,6 +554,18 @@ const AdminBookings = () => {
                         <Send className="h-4 w-4 mr-2" />
                         Répondre
                       </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedQuote(quote);
+                          setIsQuoteEditModalOpen(true);
+                        }}
+                        className="border-gold/50 hover:bg-gold/10 hover:border-gold"
+                      >
+                        <Edit className="h-4 w-4 mr-2" />
+                        Modifier le devis
+                      </Button>
                       <div className="flex-1" />
                       <Button
                         size="sm"
@@ -543,6 +599,13 @@ const AdminBookings = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        <QuoteEditModal
+          open={isQuoteEditModalOpen}
+          onOpenChange={setIsQuoteEditModalOpen}
+          quote={selectedQuote}
+          onQuoteUpdated={fetchData}
+        />
       </div>
     </div>
   );

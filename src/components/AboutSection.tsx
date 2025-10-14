@@ -1,12 +1,12 @@
-import { Music, Users, Calendar, Award } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Music, Users, Calendar, Award } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const AboutSection = () => {
   const stats = [
-    { icon: Music, value: '100+', label: 'Événements mixés' },
-    { icon: Users, value: '10K+', label: 'Personnes rassemblées' },
-    { icon: Calendar, value: '18+', label: 'Années d\'expérience' },
-    { icon: Award, value: '50+', label: 'Soirées mémorables' },
+    { icon: Music, value: "85+", label: "Événements mixés" },
+    { icon: Users, value: "3K+", label: "Personnes rassemblées" },
+    { icon: Calendar, value: "18+", label: "Années d'expérience" },
+    { icon: Award, value: "50+", label: "Soirées mémorables" },
   ];
 
   return (
@@ -21,32 +21,43 @@ const AboutSection = () => {
               </h2>
               <div className="w-24 h-1 bg-gradient-gold rounded-full mb-8"></div>
             </div>
-            
+
             <div className="space-y-6">
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Basé à <span className="text-gold font-semibold">Toulouse et dans toute la région Occitanie</span> (Colomiers, Blagnac, Tournefeuille, Muret, Balma...), je transforme chaque événement en une expérience musicale inoubliable. Je crée des ambiances uniques qui font vibrer les foules.
+                Basé à <span className="text-gold font-semibold">Toulouse et dans toute la région Occitanie</span>{" "}
+                (Colomiers, Blagnac, Tournefeuille, Muret, Balma...), je transforme chaque événement en une expérience
+                musicale inoubliable. Je crée des ambiances uniques qui font vibrer les foules.
               </p>
-              
+
               <p className="text-lg text-muted-foreground leading-relaxed">
-                <span className="text-gold font-semibold">Musiques latines, Afrobeat, années 80, Pop, House, Dancehall, RnB, Funk</span>... Mon style éclectique s'adapte à tous les publics et toutes les occasions. Que ce soit pour vos <span className="text-gold font-semibold">soirées privées</span>, <span className="text-gold font-semibold">mariages</span>, <span className="text-gold font-semibold">événements d'entreprise</span> ou <span className="text-gold font-semibold">festivals</span>, je mets tout mon savoir-faire à votre service.
+                <span className="text-gold font-semibold">
+                  Musiques latines, Afrobeat, Années 80, Pop, House, Dancehall, RnB, Funk
+                </span>
+                ... Mon style éclectique s'adapte à tous les publics et toutes les occasions. Que ce soit pour vos{" "}
+                <span className="text-gold font-semibold">soirées privées</span>,{" "}
+                <span className="text-gold font-semibold">mariages</span>,{" "}
+                <span className="text-gold font-semibold">événements d'entreprise</span> ou{" "}
+                <span className="text-gold font-semibold">festivals</span>, je mets tout mon savoir-faire à votre
+                service.
               </p>
-              
+
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Ma mission : créer la bande sonore parfaite pour vos moments les plus précieux et faire danser vos invités jusqu'au bout de la nuit !
+                Ma mission : créer la bande sonore parfaite pour vos moments les plus précieux et faire danser vos
+                invités jusqu'au bout de la nuit !
               </p>
             </div>
 
             <div className="flex flex-wrap gap-4">
-              <Button 
+              <Button
                 className="bg-gradient-gold hover:opacity-90 text-deep-black font-semibold"
-                onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })}
               >
                 Découvrir mes services
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="border-gold text-gold hover:bg-gold hover:text-deep-black"
-                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
               >
                 Voir mon parcours
               </Button>
@@ -65,12 +76,8 @@ const AboutSection = () => {
                     <Icon className="h-8 w-8 text-gold" />
                   </div>
                   <div className="space-y-1">
-                    <div className="text-3xl font-black font-montserrat text-gradient">
-                      {value}
-                    </div>
-                    <div className="text-sm text-muted-foreground font-medium">
-                      {label}
-                    </div>
+                    <div className="text-3xl font-black font-montserrat text-gradient">{value}</div>
+                    <div className="text-sm text-muted-foreground font-medium">{label}</div>
                   </div>
                 </div>
               </div>

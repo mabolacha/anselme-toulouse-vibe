@@ -17,8 +17,9 @@ const EventsSection = () => {
       date: "2025-05-31",
       time: "23:00",
       location: "Marignac Lasclares, 31",
-      description: "Par le Comité des fêtes de la Mairie",
+      description: "Organisée par les Comité des fêtes de la Mairie",
       price: "15€",
+      status: "confirmed",
     },
     {
       id: 2,
@@ -29,6 +30,7 @@ const EventsSection = () => {
       location: "Le Fousseret, 31",
       description: "Festival outdoor avec DJ sets en plein air",
       price: "Gratuit",
+      status: "confirmed",
     },
     {
       id: 3,
@@ -36,9 +38,10 @@ const EventsSection = () => {
       venue: "BBT Cornebarrieu",
       date: "2025-09-13",
       time: "22:30",
-      location: "6, rue E. Dewotine, Cornebarrieu",
+      location: "6, rue E. Dewotine, Cornebarrieu,31",
       description: "Animation avec DJ Riina",
       price: "12€ + Conso - en pré-vente sur Bizouk",
+      status: "confirmed",
     },
     {
       id: 4,
@@ -49,6 +52,7 @@ const EventsSection = () => {
       location: "6, rue E. Dewotine, Cornebarrieu",
       description: "Cours de danse Kizomba avant la soirée",
       price: "12€ + Conso - en pré-vente sur Bizouk",
+      status: "confirmed",
     },
   ];
 
@@ -84,10 +88,12 @@ const EventsSection = () => {
             className={`px-3 py-1 rounded-full text-xs font-bold font-montserrat tracking-wide ${
               isPast
                 ? "bg-muted text-muted-foreground"
-                : "bg-gold text-deep-black"
+                : event.status === "private"
+                  ? "bg-toulouse-brick text-foreground"
+                  : "bg-gold text-deep-black"
             }`}
           >
-            {isPast ? "TERMINÉ" : "OUVERT"}
+            {isPast ? "TERMINÉ" : event.status === "private" ? "PRIVÉ" : "OUVERT"}
           </span>
           <span className="text-gold font-bold font-montserrat">{event.price}</span>
         </div>
@@ -122,10 +128,10 @@ const EventsSection = () => {
         {/* Action Button */}
         <Button
           className="w-full bg-gradient-gold hover:bg-gold-muted text-deep-black font-bold font-montserrat tracking-wide transition-all duration-300"
-          disabled={isPast}
-          onClick={!isPast ? () => setIsBookingModalOpen(true) : undefined}
+          disabled={isPast || event.status === "private"}
+          onClick={!isPast && event.status !== "private" ? () => setIsBookingModalOpen(true) : undefined}
         >
-          {isPast ? "ÉVÉNEMENT TERMINÉ" : "RÉSERVER"}
+          {isPast ? "ÉVÉNEMENT TERMINÉ" : event.status === "private" ? "ÉVÉNEMENT PRIVÉ" : "RÉSERVER"}
         </Button>
       </div>
     </Card>

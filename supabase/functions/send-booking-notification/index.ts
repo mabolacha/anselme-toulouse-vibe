@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { z } from "npm:zod@3.25.76";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -7,6 +8,60 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Validation schemas (server-side protection)
+const bookingSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(255).toLowerCase(),
+  phone: z.string().trim().max(20).regex(/^[0-9+\s\-().]*$/).optional().or(z.literal('')),
+  event_type: z.enum(['mariage', 'anniversaire', 'soiree-privee', 'corporate', 'festival', 'autre']),
+  event_date: z.string().optional().or(z.literal('')),
+  guest_count: z.string().optional().or(z.literal('')),
+  venue: z.string().trim().max(200).optional().or(z.literal('')),
+  budget_range: z.string().optional().or(z.literal('')),
+  message: z.string().trim().min(10).max(2000),
+  type: z.literal('booking')
+});
+
+const quoteSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(255).toLowerCase(),
+  phone: z.string().trim().max(20).regex(/^[0-9+\s\-().]*$/).optional().or(z.literal('')),
+  event_type: z.enum(['mariage', 'anniversaire', 'soiree-privee', 'corporate', 'festival', 'autre']),
+  event_date: z.string().optional().or(z.literal('')),
+  venue: z.string().trim().max(200).optional().or(z.literal('')),
+  guest_count: z.string().optional().or(z.literal('')),
+  duration_hours: z.string().optional().or(z.literal('')),
+  special_requests: z.string().trim().max(1000).optional().or(z.literal('')),
+  budget_range: z.string().optional().or(z.literal('')),
+  message: z.string().trim().min(10).max(2000),
+  type: z.literal('quote')
+});
+
+const notificationSchema = z.discriminatedUnion('type', [
+  bookingSchema,
+  quoteSchema
+]);
+
+// Simple in-memory rate limiting (resets on function cold start)
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(identifier: string): boolean {
+  const now = Date.now();
+  const limit = rateLimitStore.get(identifier);
+  
+  if (!limit || now > limit.resetAt) {
+    rateLimitStore.set(identifier, { count: 1, resetAt: now + 3600000 }); // 1 hour
+    return true;
+  }
+  
+  if (limit.count >= 3) {
+    return false;
+  }
+  
+  limit.count++;
+  return true;
+}
 
 interface NotificationRequest {
   name: string;
@@ -30,10 +85,50 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const body: NotificationRequest = await req.json();
-    console.log("Notification request received:", { type: body.type, email: body.email });
+    const body = await req.json();
+    
+    // SERVER-SIDE VALIDATION (Critical Security Layer)
+    const validationResult = notificationSchema.safeParse(body);
+    
+    if (!validationResult.success) {
+      console.error("Validation failed:", validationResult.error.format());
+      return new Response(
+        JSON.stringify({ 
+          error: "Invalid request data",
+          details: validationResult.error.issues.map(issue => ({
+            field: issue.path.join('.'),
+            message: issue.message
+          }))
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders }
+        }
+      );
+    }
 
-    const { name, email, phone, event_type, event_date, guest_count, venue, budget_range, message, duration_hours, special_requests, type } = body;
+    const validatedBody = validationResult.data;
+    
+    // RATE LIMITING (Prevent abuse)
+    const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+    const rateLimitKey = `${validatedBody.email}:${clientIP}`;
+
+    if (!checkRateLimit(rateLimitKey)) {
+      return new Response(
+        JSON.stringify({ 
+          error: "Rate limit exceeded",
+          message: "Trop de demandes. Veuillez réessayer dans une heure."
+        }),
+        {
+          status: 429,
+          headers: { "Content-Type": "application/json", ...corsHeaders }
+        }
+      );
+    }
+
+    console.log("Notification request received:", { type: validatedBody.type });
+
+    const { name, email, phone, event_type, event_date, guest_count, venue, budget_range, message, duration_hours, special_requests, type } = validatedBody;
 
     // Format event type for display
     const eventTypeDisplay = {
@@ -299,7 +394,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     // Send owner notification
-    console.log("Sending owner notification to a.magaia@gmail.com");
+    console.log("Sending owner notification");
     const ownerEmailResponse = await resend.emails.send({
       from: "DJ Anselme <info@djanselme.com>",
       to: ["a.magaia@gmail.com"],
@@ -312,10 +407,10 @@ const handler = async (req: Request): Promise<Response> => {
       throw ownerEmailResponse.error;
     }
 
-    console.log("Owner email sent successfully:", ownerEmailResponse);
+    console.log("Owner email sent successfully:", { id: ownerEmailResponse.data?.id });
 
     // Send client confirmation
-    console.log("Sending client confirmation to", email);
+    console.log("Sending client confirmation");
     const clientEmailResponse = await resend.emails.send({
       from: "DJ Anselme <info@djanselme.com>",
       reply_to: "info@djanselme.com",
@@ -329,7 +424,7 @@ const handler = async (req: Request): Promise<Response> => {
       throw clientEmailResponse.error;
     }
 
-    console.log("Client email sent successfully:", clientEmailResponse);
+    console.log("Client email sent successfully:", { id: clientEmailResponse.data?.id });
 
     return new Response(
       JSON.stringify({ 
@@ -346,7 +441,10 @@ const handler = async (req: Request): Promise<Response> => {
       }
     );
   } catch (error: any) {
-    console.error("Error in send-booking-notification function:", error);
+    console.error("Error in send-booking-notification function:", {
+      message: error.message,
+      name: error.name
+    });
     return new Response(
       JSON.stringify({ error: error.message }),
       {

@@ -17,7 +17,7 @@ const EventsSection = () => {
       date: "2025-05-31",
       time: "23:00",
       location: "Marignac Lasclares, 31",
-      description: "Organisée par les Comité des fêtes de la Mairie",
+      description: "Par le Comité des fêtes de la Mairie",
       price: "15€",
       status: "confirmed",
     },

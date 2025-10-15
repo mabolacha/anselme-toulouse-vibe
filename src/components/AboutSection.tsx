@@ -42,7 +42,7 @@ const AboutSection = () => {
               </p>
 
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Ma mission : créer la bande sonore parfaite pour vos moments les plus précieux et faire danser vos
+                Ma mission : créer l'ambiance musicale parfaite pour vos moments les plus précieux et faire danser vos
                 invités jusqu'au bout de la nuit !
               </p>
             </div>

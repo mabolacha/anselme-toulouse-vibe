@@ -3,6 +3,7 @@ import HeroSection from '@/components/HeroSection';
 import AboutSection from '@/components/AboutSection';
 import EventsSection from '@/components/EventsSection';
 import MusicSection from '@/components/MusicSection';
+import GallerySection from '@/components/GallerySection';
 import ContactSection from '@/components/ContactSection';
 
 const Index = () => {
@@ -13,6 +14,7 @@ const Index = () => {
       <AboutSection />
       <EventsSection />
       <MusicSection />
+      <GallerySection />
       <ContactSection />
       
       {/* Footer */}

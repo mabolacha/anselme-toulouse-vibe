@@ -110,6 +110,45 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_photos: {
+        Row: {
+          created_at: string
+          display_order: number
+          event_date: string | null
+          event_type: string | null
+          featured: boolean
+          id: string
+          image_url: string
+          location: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          event_date?: string | null
+          event_type?: string | null
+          featured?: boolean
+          id?: string
+          image_url: string
+          location?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          event_date?: string | null
+          event_type?: string | null
+          featured?: boolean
+          id?: string
+          image_url?: string
+          location?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mix_sessions: {
         Row: {
           created_at: string | null

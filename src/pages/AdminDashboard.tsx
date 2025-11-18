@@ -4,10 +4,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminBookings from '@/components/AdminBookings';
 import AdminUpload from '@/components/AdminUpload';
 import AdminMixSessions from '@/components/AdminMixSessions';
+import AdminGallery from '@/components/AdminGallery';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdmin } from '@/hooks/useAdmin';
 import { Button } from '@/components/ui/button';
-import { LogOut, Music, Calendar, Upload, Radio } from 'lucide-react';
+import { LogOut, Music, Calendar, Upload, Radio, Camera } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
@@ -92,7 +93,7 @@ const AdminDashboard = () => {
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs defaultValue="bookings" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsList className="grid w-full grid-cols-4 mb-8">
               <TabsTrigger value="bookings" className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 Réservations & Devis
@@ -104,6 +105,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="mixsessions" className="flex items-center gap-2">
                 <Radio className="h-4 w-4" />
                 Mix Sessions
+              </TabsTrigger>
+              <TabsTrigger value="gallery" className="flex items-center gap-2">
+                <Camera className="h-4 w-4" />
+                Galerie
               </TabsTrigger>
             </TabsList>
 
@@ -117,6 +122,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="mixsessions">
               <AdminMixSessions />
+            </TabsContent>
+
+            <TabsContent value="gallery">
+              <AdminGallery />
             </TabsContent>
           </Tabs>
         </div>

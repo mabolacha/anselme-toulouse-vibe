@@ -1,18 +1,49 @@
+import { useState, useMemo } from 'react';
 import { useGalleryPhotos } from '@/hooks/useGalleryPhotos';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Camera } from 'lucide-react';
+import { Camera, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const GallerySection = () => {
   const { photos, loading } = useGalleryPhotos(true);
+  const [selectedEventType, setSelectedEventType] = useState<string | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
 
-  // Show only first 6 featured photos
-  const displayPhotos = photos.slice(0, 6);
+  // Extract unique event types and locations
+  const eventTypes = useMemo(() => {
+    const types = new Set(photos.map(p => p.event_type).filter(Boolean));
+    return Array.from(types).sort();
+  }, [photos]);
+
+  const locations = useMemo(() => {
+    const locs = new Set(photos.map(p => p.location).filter(Boolean));
+    return Array.from(locs).sort();
+  }, [photos]);
+
+  // Filter photos based on selected filters
+  const filteredPhotos = useMemo(() => {
+    return photos.filter(photo => {
+      if (selectedEventType && photo.event_type !== selectedEventType) return false;
+      if (selectedLocation && photo.location !== selectedLocation) return false;
+      return true;
+    });
+  }, [photos, selectedEventType, selectedLocation]);
+
+  // Show only first 6 filtered photos
+  const displayPhotos = filteredPhotos.slice(0, 6);
+
+  const clearFilters = () => {
+    setSelectedEventType(null);
+    setSelectedLocation(null);
+  };
+
+  const hasActiveFilters = selectedEventType || selectedLocation;
 
   return (
     <section id="galerie" className="py-20 bg-card/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Camera className="h-8 w-8 text-gold" />
             <h2 className="text-4xl md:text-5xl font-black text-gradient">
@@ -23,6 +54,59 @@ const GallerySection = () => {
             Découvrez les meilleurs moments de mes soirées à Toulouse
           </p>
         </div>
+
+        {/* Filters */}
+        {!loading && (eventTypes.length > 0 || locations.length > 0) && (
+          <div className="mb-8">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {/* Event Type Filters */}
+              {eventTypes.map((type) => (
+                <Button
+                  key={type}
+                  variant={selectedEventType === type ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedEventType(selectedEventType === type ? null : type)}
+                  className="transition-all"
+                >
+                  {type}
+                </Button>
+              ))}
+
+              {/* Location Filters */}
+              {locations.map((location) => (
+                <Button
+                  key={location}
+                  variant={selectedLocation === location ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedLocation(selectedLocation === location ? null : location)}
+                  className="transition-all"
+                >
+                  📍 {location}
+                </Button>
+              ))}
+
+              {/* Clear Filters Button */}
+              {hasActiveFilters && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-4 w-4 mr-1" />
+                  Réinitialiser
+                </Button>
+              )}
+            </div>
+
+            {/* Active Filters Count */}
+            {hasActiveFilters && (
+              <p className="text-center text-sm text-muted-foreground mt-4">
+                {filteredPhotos.length} photo{filteredPhotos.length !== 1 ? 's' : ''} trouvée{filteredPhotos.length !== 1 ? 's' : ''}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Gallery Grid */}
         {loading ? (

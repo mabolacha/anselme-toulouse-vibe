@@ -10,6 +10,7 @@ const Navigation = () => {
     { name: "À Propos", href: "#about" },
     { name: "Musique", href: "#music" },
     { name: "Événements", href: "#events" },
+    { name: "Galerie", href: "#galerie" },
     { name: "Contact", href: "#contact" },
   ];
 

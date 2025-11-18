@@ -13,6 +13,7 @@ const AdminGallery = () => {
   const { photos, loading, refetch } = useGalleryPhotos(false);
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     event_date: '',
@@ -21,14 +22,27 @@ const AdminGallery = () => {
     featured: false,
   });
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files || files.length === 0) return;
+    if (files && files.length > 0) {
+      setSelectedFiles(files);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFiles || selectedFiles.length === 0) {
+      toast({
+        title: 'Attention',
+        description: 'Veuillez sélectionner au moins une photo',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     setUploading(true);
 
     try {
-      for (const file of Array.from(files)) {
+      for (const file of Array.from(selectedFiles)) {
         // Upload to storage
         const fileExt = file.name.split('.').pop();
         const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
@@ -61,8 +75,8 @@ const AdminGallery = () => {
       }
 
       toast({
-        title: 'Succès',
-        description: `${files.length} photo(s) ajoutée(s) avec succès`,
+        title: '✅ Upload réussi !',
+        description: `${selectedFiles.length} photo(s) ajoutée(s) avec succès`,
       });
 
       // Reset form
@@ -73,12 +87,14 @@ const AdminGallery = () => {
         location: '',
         featured: false,
       });
-      e.target.value = '';
+      setSelectedFiles(null);
+      const fileInput = document.getElementById('photos') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
       refetch();
     } catch (error) {
       console.error('Upload error:', error);
       toast({
-        title: 'Erreur',
+        title: '❌ Erreur',
         description: 'Erreur lors de l\'upload',
         variant: 'destructive',
       });
@@ -215,17 +231,34 @@ const AdminGallery = () => {
               type="file"
               accept="image/*"
               multiple
-              onChange={handleFileUpload}
+              onChange={handleFileSelect}
               disabled={uploading}
               className="cursor-pointer"
             />
+            {selectedFiles && selectedFiles.length > 0 && (
+              <p className="text-sm text-muted-foreground mt-2">
+                {selectedFiles.length} fichier(s) sélectionné(s)
+              </p>
+            )}
           </div>
-          {uploading && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Upload en cours...
-            </div>
-          )}
+          <Button
+            onClick={handleUpload}
+            disabled={uploading || !selectedFiles}
+            className="w-full"
+            size="lg"
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Upload en cours...
+              </>
+            ) : (
+              <>
+                <Upload className="mr-2 h-4 w-4" />
+                Sauvegarder et uploader les photos
+              </>
+            )}
+          </Button>
         </CardContent>
       </Card>
 

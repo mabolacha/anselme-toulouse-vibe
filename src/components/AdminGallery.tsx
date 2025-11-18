@@ -283,7 +283,7 @@ const AdminGallery = () => {
                   <img
                     src={photo.image_url}
                     alt={photo.title}
-                    className="w-full aspect-[4/3] object-cover rounded-lg"
+                    className="w-full h-64 object-contain bg-muted rounded-lg"
                   />
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col justify-between p-3">
                     <div>

@@ -4,57 +4,13 @@ import { Card } from "@/components/ui/card";
 import { useState } from "react";
 import BookingModal from "@/components/BookingModal";
 import QuoteModal from "@/components/QuoteModal";
+import { useEvents } from "@/hooks/useEvents";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EventsSection = () => {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
-
-  const upcomingEvents = [
-    {
-      id: 1,
-      title: "Soirée spéciale jeunes - Marignac Lasclares",
-      venue: "Salles des fêtes",
-      date: "2025-05-31",
-      time: "23:00",
-      location: "Marignac Lasclares, (31)",
-      description: "Organisée par les Comité des fêtes de la Mairie",
-      price: "15€",
-      status: "confirmed",
-    },
-    {
-      id: 2,
-      title: "Fête de la Musique - Le Fousseret",
-      venue: "Place de la Mairie",
-      date: "2025-06-21",
-      time: "23:00",
-      location: "Le Fousseret, (31)",
-      description: "Festival outdoor avec DJ sets en plein air",
-      price: "Gratuit",
-      status: "confirmed",
-    },
-    {
-      id: 3,
-      title: "Soirée Afro-Caribéénne",
-      venue: "BBT Cornebarrieu",
-      date: "2025-09-13",
-      time: "22:30",
-      location: "6, rue E. Dewotine, Cornebarrieu (31)",
-      description: "Animation avec DJ Riina",
-      price: "12€ + Conso - en pré-vente sur Bizouk",
-      status: "confirmed",
-    },
-    {
-      id: 4,
-      title: "Soirée Afro-Caribéénne",
-      venue: "BBT Cornebarrieu (31700)",
-      date: "2025-12-06",
-      time: "22:30",
-      location: "6, rue E. Dewotine, Cornebarrieu (31)",
-      description: "Cours de danse Kizomba avant la soirée",
-      price: "12€ + Conso - en pré-vente sur Bizouk",
-      status: "confirmed",
-    },
-  ];
+  const { events: upcomingEvents, loading } = useEvents();
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -76,7 +32,7 @@ const EventsSection = () => {
   const futureEvents = upcomingEvents.filter((event) => !isEventPast(event.date));
   const pastEvents = upcomingEvents.filter((event) => isEventPast(event.date));
 
-  const EventCard = ({ event, isPast }: { event: (typeof upcomingEvents)[0]; isPast: boolean }) => (
+  const EventCard = ({ event, isPast }: { event: any; isPast: boolean }) => (
     <Card
       key={event.id}
       className="bg-card/80 backdrop-blur-sm border-gold/20 hover:border-gold transition-all duration-300 group hover:shadow-gold overflow-hidden"
@@ -147,8 +103,24 @@ const EventsSection = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Loading State */}
+        {loading && (
+          <div className="mb-20">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-6xl font-black font-montserrat text-gradient mb-4 tracking-wider">
+                ÉVÉNEMENTS À VENIR
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="h-[400px]" />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Upcoming Events Section */}
-        {futureEvents.length > 0 && (
+        {!loading && futureEvents.length > 0 && (
           <div className="mb-20">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-6xl font-black font-montserrat text-gradient mb-4 tracking-wider">
@@ -177,8 +149,20 @@ const EventsSection = () => {
           </div>
         )}
 
+        {/* No Events Message */}
+        {!loading && futureEvents.length === 0 && pastEvents.length === 0 && (
+          <div className="text-center py-20">
+            <h2 className="text-4xl md:text-6xl font-black font-montserrat text-gradient mb-4 tracking-wider">
+              ÉVÉNEMENTS
+            </h2>
+            <p className="text-xl text-muted-foreground font-montserrat">
+              Aucun événement pour le moment. Revenez bientôt !
+            </p>
+          </div>
+        )}
+
         {/* Past Events Section */}
-        {pastEvents.length > 0 && (
+        {!loading && pastEvents.length > 0 && (
           <div>
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-6xl font-black font-montserrat text-gradient mb-4 tracking-wider">

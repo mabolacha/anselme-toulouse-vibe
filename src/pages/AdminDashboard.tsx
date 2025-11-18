@@ -5,6 +5,7 @@ import AdminBookings from '@/components/AdminBookings';
 import AdminUpload from '@/components/AdminUpload';
 import AdminMixSessions from '@/components/AdminMixSessions';
 import AdminGallery from '@/components/AdminGallery';
+import AdminEvents from '@/components/AdminEvents';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdmin } from '@/hooks/useAdmin';
 import { Button } from '@/components/ui/button';
@@ -93,7 +94,7 @@ const AdminDashboard = () => {
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs defaultValue="bookings" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsList className="grid w-full grid-cols-5 mb-8">
               <TabsTrigger value="bookings" className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 Réservations & Devis
@@ -109,6 +110,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="gallery" className="flex items-center gap-2">
                 <Camera className="h-4 w-4" />
                 Galerie
+              </TabsTrigger>
+              <TabsTrigger value="events" className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Événements
               </TabsTrigger>
             </TabsList>
 
@@ -126,6 +131,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="gallery">
               <AdminGallery />
+            </TabsContent>
+
+            <TabsContent value="events">
+              <AdminEvents />
             </TabsContent>
           </Tabs>
         </div>

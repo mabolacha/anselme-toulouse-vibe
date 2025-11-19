@@ -120,7 +120,7 @@ const GallerySection = () => {
             {displayPhotos.map((photo) => (
               <div
                 key={photo.id}
-                className="group relative aspect-[4/3] overflow-hidden rounded-lg border border-gold/20 hover:border-gold/50 transition-all duration-300"
+                className="group relative aspect-[4/3] overflow-hidden rounded-lg transition-all duration-300"
               >
                 <img
                   src={photo.image_url}

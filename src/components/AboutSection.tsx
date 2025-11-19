@@ -31,7 +31,7 @@ const AboutSection = () => {
 
               <p className="text-lg text-muted-foreground leading-relaxed">
                 <span className="text-gold font-semibold">
-                  Musiques latines, Afrobeat, Années 80, Pop, House, Dancehall, RnB, Funk
+                  Musiques Latines, Afrobeat, Années 80, Pop, House, Dancehall, RnB, Funk
                 </span>
                 ... Mon style éclectique s'adapte à tous les publics et toutes les occasions. Que ce soit pour vos{" "}
                 <span className="text-gold font-semibold">soirées privées</span>,{" "}
